@@ -21,7 +21,7 @@ namespace TSLib.AI.Behaviour.StateMachines.PHFSM
         private readonly IComparer<Transition> _comparer;
 
 
-        protected PHS(PHSData_So data, IComparer<Transition> comparer)
+        protected PHS(PHSConfig_So data, IComparer<Transition> comparer)
         {
             if (data == null) throw new ArgumentNullException(nameof(data));
 

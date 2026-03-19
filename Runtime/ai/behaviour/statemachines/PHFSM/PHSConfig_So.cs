@@ -5,17 +5,13 @@ using UnityEngine;
 namespace TSLib.AI.Behaviour.StateMachines.PHFSM
 {
     [CreateAssetMenu(
-    fileName = "PHSData",
-    menuName = "Scriptable Objects/HFSM/PHSData"
+    fileName = "PHSConfig",
+    menuName = "Scriptable Objects/HFSM/PHSConfig"
 )]
-    public class PHSData_So : ScriptableObject
+    public class PHSConfig_So : StateConfig_So
     {
         [field: SerializeField] public int Priority { get; private set; }
         [field: SerializeField] public bool IsInterruptible { get; private set; }
-
-        [field: SerializeField] public VoidChannel_So OnEnter { get; private set; }
-        [field: SerializeField] public VoidChannel_So OnExecute { get; private set; }
-        [field: SerializeField] public VoidChannel_So OnExit { get; private set; }
 
         [field: SerializeField] public VoidChannel_So OnEnterCondition { get; private set; }
         [field: SerializeField] public VoidChannel_So OnExitCondition { get; private set; }
