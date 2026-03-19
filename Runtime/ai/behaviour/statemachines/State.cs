@@ -9,11 +9,11 @@ namespace TSLib.AI.Behaviour.StateMachines
     /// </summary>
     public abstract class State
     {
-        public SceneCtx SceneCtx { protected get; set; }
-        public AppCtx AppCtx { protected get; set; }
+        protected SceneCtx SceneCtx { get; private set; }
+        protected AppCtx AppCtx { get; private set; }
 
-        public VoidChannel_So OnEnter { protected get; set; }
-        public VoidChannel_So OnExit { protected get; set; }
+        protected VoidChannel_So OnEnter { get; set; }
+        protected VoidChannel_So OnExit { get; set; }
 
         /// <summary>
         /// Called once when the FSM enters this state.
@@ -40,6 +40,18 @@ namespace TSLib.AI.Behaviour.StateMachines
         public virtual void Exit()
         {
             if (OnExit != null) OnExit.TriggerEvent();
+        }
+
+        public void Bind(SceneCtx sceneCtx, AppCtx appCtx)
+        {
+            SceneCtx = sceneCtx;
+            AppCtx = appCtx;
+        }
+
+        public void Configure(StateConfig_So config)
+        {
+            OnEnter = config.OnEnter ? config.OnEnter : null;
+            OnExit = config.OnExit ? config.OnExit : null;
         }
     }
 }

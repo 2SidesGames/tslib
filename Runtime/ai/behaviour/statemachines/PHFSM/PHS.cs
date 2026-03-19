@@ -18,21 +18,21 @@ namespace TSLib.AI.Behaviour.StateMachines.PHFSM
         public VoidChannel_So OnEnterCondition { private get; set; }
         public VoidChannel_So OnExitCondition { private get; set; }
 
-        private readonly IComparer<Transition> _comparer;
+        private IComparer<Transition> _comparer;
 
 
-        protected PHS(PHSConfig_So data, IComparer<Transition> comparer)
+        public void Configure(PHSConfig_So config, IComparer<Transition> comparer)
         {
-            if (data == null) throw new ArgumentNullException(nameof(data));
+            if (config == null) throw new ArgumentNullException(nameof(config));
 
-            Priority = data.Priority;
-            IsInterruptible = data.IsInterruptible;
+            Priority = config.Priority;
+            IsInterruptible = config.IsInterruptible;
 
-            OnEnter = data.OnEnter ? data.OnEnter : null;
-            OnExit = data.OnExit ? data.OnExit : null;
+            OnEnter = config.OnEnter ? config.OnEnter : null;
+            OnExit = config.OnExit ? config.OnExit : null;
 
-            OnEnterCondition = data.OnEnterCondition ? data.OnEnterCondition : null;
-            OnExitCondition = data.OnExitCondition ? data.OnExitCondition : null;
+            OnEnterCondition = config.OnEnterCondition ? config.OnEnterCondition : null;
+            OnExitCondition = config.OnExitCondition ? config.OnExitCondition : null;
 
             SelfTransition = new Transition(this);
             _comparer = comparer ?? throw new ArgumentNullException(nameof(comparer));
