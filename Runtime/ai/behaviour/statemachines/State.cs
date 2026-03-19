@@ -1,4 +1,5 @@
-﻿using TSLib.Utility.Patterns.Scene.Contexts;
+﻿using TSLib.Utility.Patterns.EventChannels.Primitive;
+using TSLib.Utility.Patterns.Scene.Contexts;
 
 namespace TSLib.AI.Behaviour.StateMachines
 {
@@ -11,12 +12,18 @@ namespace TSLib.AI.Behaviour.StateMachines
         public SceneCtx SceneCtx { protected get; set; }
         public AppCtx AppCtx { protected get; set; }
 
+        public VoidChannel_So OnEnter { protected get; set; }
+        public VoidChannel_So OnExit { protected get; set; }
+
         /// <summary>
         /// Called once when the FSM enters this state.
         /// Use this method to initialize state-specific data,
         /// register listeners, prepare behavior, etc.
         /// </summary>
-        public virtual void Enter() { }
+        public virtual void Enter()
+        {
+            if (OnEnter != null) OnEnter.TriggerEvent();
+        }
 
         /// <summary>
         /// Called every update cycle while this state is the current active state.
@@ -30,7 +37,10 @@ namespace TSLib.AI.Behaviour.StateMachines
         /// Use this method to clean up state-specific data,
         /// unregister listeners,  stop ongoing behavior, etc.
         /// </summary>
-        public virtual void Exit() { }
+        public virtual void Exit()
+        {
+            if (OnExit != null) OnExit.TriggerEvent();
+        }
     }
 }
 

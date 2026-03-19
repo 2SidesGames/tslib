@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using TSLib.AI.Behaviour.StateMachines.HFSM;
-using TSLib.Utility.Debug.Logging;
 using TSLib.Utility.Patterns.EventChannels.Primitive;
 
 namespace TSLib.AI.Behaviour.StateMachines.PHFSM
@@ -13,10 +12,6 @@ namespace TSLib.AI.Behaviour.StateMachines.PHFSM
 
         public List<Transition> TransitionList { get; private set; }
         public Transition SelfTransition { get; private set; }
-
-        public VoidChannel_So OnEnter { private get; set; }
-        public VoidChannel_So OnExecute { private get; set; }
-        public VoidChannel_So OnExit { private get; set; }
 
         public bool EnterCondition { get; private set; } = false;
         public bool ExitCondition { get; private set; } = false;
@@ -34,7 +29,6 @@ namespace TSLib.AI.Behaviour.StateMachines.PHFSM
             IsInterruptible = data.IsInterruptible;
 
             OnEnter = data.OnEnter ? data.OnEnter : null;
-            OnExecute = data.OnExecute ? data.OnExecute : null;
             OnExit = data.OnExit ? data.OnExit : null;
 
             OnEnterCondition = data.OnEnterCondition ? data.OnEnterCondition : null;
@@ -50,8 +44,8 @@ namespace TSLib.AI.Behaviour.StateMachines.PHFSM
 
         public sealed override void Enter()
         {
+            base.Enter();
             EnterCondition = false;
-            if (OnEnter != null) OnEnter.TriggerEvent();
             EnterLogic();
         }
 
@@ -86,7 +80,7 @@ namespace TSLib.AI.Behaviour.StateMachines.PHFSM
         {
             ExitCondition = false;
             ExitLogic();
-            if (OnExit != null) OnExit.TriggerEvent();
+            base.Exit();
         }
 
         public void SetTransitionList(List<Transition> transitionList)
