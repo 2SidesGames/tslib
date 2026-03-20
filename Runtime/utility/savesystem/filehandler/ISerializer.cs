@@ -6,7 +6,7 @@ namespace TSLib.SaveSystem.FileHandler
     {
         public abstract string Extension { get; }
 
-        public string Serialize<T>(T objeto);
+        public string Serialize<T>(T serializableObject);
 
         public T Deserialize<T>(string json, JsonSerializerSettings settings);
     }

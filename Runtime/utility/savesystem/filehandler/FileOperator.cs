@@ -18,22 +18,22 @@ namespace TSLib.SaveSystem.FileHandler
             _directoryPath = Application.persistentDataPath;
         }
 
-        public void SaveFile(SaveDataBase saveData, bool overwrite = true)
+        public void SaveFile(GameDataBase gameData, bool overwrite = true)
         {
-            if (saveData == null) throw new ArgumentNullException(
+            if (gameData == null) throw new ArgumentNullException(
                 "(missing) there is no data to save.");
 
-            string filePath = GetFilePath(saveData.FileName);
+            string filePath = GetFilePath(gameData.FileName);
 
             if (!overwrite && File.Exists(filePath))
             {
                 throw new IOException(
-                    $"'{saveData.FileName}.{_serializer.Extension}' already exists.");
+                    $"'{gameData.FileName}.{_serializer.Extension}' already exists.");
             }
-            File.WriteAllText(filePath, _serializer.Serialize(saveData));
+            File.WriteAllText(filePath, _serializer.Serialize(gameData));
         }
 
-        public SaveDataBase LoadFile(string fileName, JsonSerializerSettings settings = null)
+        public GameDataBase LoadFile(string fileName, JsonSerializerSettings settings = null)
         {
             string filePath = GetFilePath(fileName);
 
@@ -41,7 +41,7 @@ namespace TSLib.SaveSystem.FileHandler
             {
                 throw new IOException($"{fileName}.{_serializer.Extension} doesn't exist.");
             }
-            return _serializer.Deserialize<SaveDataBase>(File.ReadAllText(filePath), settings);
+            return _serializer.Deserialize<GameDataBase>(File.ReadAllText(filePath), settings);
         }
 
         public void DeleteFile(string fileName)
