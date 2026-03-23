@@ -69,8 +69,6 @@ namespace TSLib.SaveSystem
 
             if (GameData == null) return;
 
-            TSLogger.Log("GameData exists");
-
             onLoad.TriggerEvent();
         }
     }
