@@ -1,6 +1,8 @@
+using Cysharp.Threading.Tasks;
 using Newtonsoft.Json;
 using System;
 using System.IO;
+using System.Threading;
 using TSLib.SaveSystem.FileData;
 using UnityEngine;
 
@@ -37,10 +39,8 @@ namespace TSLib.SaveSystem.FileHandler
         {
             string filePath = GetFilePath(fileName);
 
-            if (!File.Exists(filePath))
-            {
-                throw new IOException($"{fileName}.{_serializer.Extension} doesn't exist.");
-            }
+            if (!File.Exists(filePath)) return null;
+
             return _serializer.Deserialize<GameDataBase>(File.ReadAllText(filePath), settings);
         }
 
@@ -48,10 +48,7 @@ namespace TSLib.SaveSystem.FileHandler
         {
             string filePath = GetFilePath(fileName);
 
-            if (!File.Exists(filePath))
-            {
-                throw new IOException($"{fileName}.{_serializer.Extension} doesn't exist.");
-            }
+            if (!File.Exists(filePath)) return;
 
             File.Delete(filePath);
         }
@@ -63,6 +60,56 @@ namespace TSLib.SaveSystem.FileHandler
             foreach (var fileName in files)
             {
                 DeleteFile(fileName);
+            }
+        }
+
+        public async UniTask SaveFileAsync(GameDataBase gameData, bool overwrite = true, CancellationToken ct = default)
+        {
+            if (gameData == null)
+                throw new ArgumentNullException(nameof(gameData), "There is no data to save.");
+
+            string filePath = GetFilePath(gameData.FileName);
+
+            if (!overwrite && File.Exists(filePath))
+                throw new IOException($"'{gameData.FileName}.{_serializer.Extension}' already exists.");
+
+            await UniTask.SwitchToThreadPool();
+
+            try
+            {
+                ct.ThrowIfCancellationRequested();
+
+                string json = _serializer.Serialize(gameData);
+
+                ct.ThrowIfCancellationRequested();
+
+                await File.WriteAllTextAsync(filePath, json, ct);
+            }
+            finally
+            {
+                await UniTask.SwitchToMainThread();
+            }
+        }
+
+        public async UniTask<GameDataBase> LoadFileAsync(string fileName, JsonSerializerSettings settings = null, CancellationToken ct = default)
+        {
+            string filePath = GetFilePath(fileName);
+
+            if (!File.Exists(filePath))
+                return null;
+
+            string json = await File.ReadAllTextAsync(filePath, ct);
+
+            await UniTask.SwitchToThreadPool();
+
+            try
+            {
+                ct.ThrowIfCancellationRequested();
+                return _serializer.Deserialize<GameDataBase>(json, settings);
+            }
+            finally
+            {
+                await UniTask.SwitchToMainThread();
             }
         }
 
