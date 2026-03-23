@@ -13,7 +13,7 @@ namespace TSLib.SaveSystem
 {
     public class JsonSaveSystem : ComponentBase
     {
-        public GameDataBase GameData { get; private set; }
+        public GameDataBase GameData { get; set; }
 
         [Header("Trigger Events")]
         [SerializeField] private VoidChannel_So onSave;
