@@ -57,6 +57,7 @@ namespace TSLib.SaveSystem
 
         public async UniTask SaveAsync(CancellationToken ct)
         {
+            onPrepareSave.TriggerEvent();
             await _fileOperator.SaveFileAsync(GameData, true, ct);
             onSave.TriggerEvent();
         }
