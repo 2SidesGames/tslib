@@ -5,23 +5,13 @@ using Cysharp.Threading.Tasks;
 using Newtonsoft.Json;
 using TSLib.SaveSystem.FileData;
 using TSLib.SaveSystem.FileHandler;
-using TSLib.Utility.Debug.Logging;
 using TSLib.Utility.Management.Component.Capabilities;
-using TSLib.Utility.Patterns.EventChannels.Primitive;
-using UnityEngine;
 
 namespace TSLib.SaveSystem
 {
     public class JsonSaveSystem : ComponentBase
     {
         public GameDataBase GameData { get; set; }
-
-        [Header("Trigger Events")]
-        [SerializeField] private VoidChannel_So onSave;
-        [SerializeField] private VoidChannel_So onPrepareSave;
-        [SerializeField] private VoidChannel_So onLoad;
-        [SerializeField] private VoidChannel_So onDelete;
-        [SerializeField] private VoidChannel_So onDeleteAll;
 
         private FileOperator _fileOperator;
 
@@ -33,43 +23,32 @@ namespace TSLib.SaveSystem
 
         public void Save()
         {
-            onPrepareSave.TriggerEvent();
             _fileOperator.SaveFile(GameData, true);
-            onSave.TriggerEvent();
         }
 
         public void Load<T>(string fileName, JsonSerializerSettings settings = null) where T : GameDataBase
         {
             GameData = _fileOperator.LoadFile<T>(fileName, settings);
-            onLoad.TriggerEvent();
         }
 
         public void Delete(string fileName)
         {
             _fileOperator.DeleteFile(fileName);
-            onDelete.TriggerEvent();
         }
 
         public void DeleteAll()
         {
             _fileOperator.DeleteAllFiles();
-            onDeleteAll.TriggerEvent();
         }
 
         public async UniTask SaveAsync(CancellationToken ct)
         {
-            onPrepareSave.TriggerEvent();
             await _fileOperator.SaveFileAsync(GameData, true, ct);
-            onSave.TriggerEvent();
         }
 
         public async UniTask LoadAsync<T>(string fileName, JsonSerializerSettings settings = null, CancellationToken ct = default) where T : GameDataBase
         {
             GameData = await _fileOperator.LoadFileAsync<T>(fileName, settings, ct);
-
-            if (GameData == null) return;
-
-            onLoad.TriggerEvent();
         }
     }
 }
