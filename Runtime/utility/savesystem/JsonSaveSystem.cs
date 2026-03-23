@@ -5,6 +5,7 @@ using Cysharp.Threading.Tasks;
 using Newtonsoft.Json;
 using TSLib.SaveSystem.FileData;
 using TSLib.SaveSystem.FileHandler;
+using TSLib.Utility.Debug.Logging;
 using TSLib.Utility.Management.Component.Capabilities;
 using TSLib.Utility.Patterns.EventChannels.Primitive;
 using UnityEngine;
@@ -67,6 +68,8 @@ namespace TSLib.SaveSystem
             GameData = await _fileOperator.LoadFileAsync<T>(fileName, settings, ct);
 
             if (GameData == null) return;
+
+            TSLogger.Log("GameData exists");
 
             onLoad.TriggerEvent();
         }
