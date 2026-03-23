@@ -17,6 +17,7 @@ namespace TSLib.SaveSystem
 
         [Header("Trigger Events")]
         [SerializeField] private VoidChannel_So onSave;
+        [SerializeField] private VoidChannel_So onPrepareSave;
         [SerializeField] private VoidChannel_So onLoad;
         [SerializeField] private VoidChannel_So onDelete;
         [SerializeField] private VoidChannel_So onDeleteAll;
@@ -31,6 +32,7 @@ namespace TSLib.SaveSystem
 
         public void Save()
         {
+            onPrepareSave.TriggerEvent();
             _fileOperator.SaveFile(GameData, true);
             onSave.TriggerEvent();
         }
