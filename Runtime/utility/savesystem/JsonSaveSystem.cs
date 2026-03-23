@@ -37,9 +37,9 @@ namespace TSLib.SaveSystem
             onSave.TriggerEvent();
         }
 
-        public void Load(string fileName, JsonSerializerSettings settings = null)
+        public void Load<T>(string fileName, JsonSerializerSettings settings = null) where T : GameDataBase
         {
-            GameData = _fileOperator.LoadFile(fileName, settings);
+            GameData = _fileOperator.LoadFile<T>(fileName, settings);
             onLoad.TriggerEvent();
         }
 
@@ -62,9 +62,9 @@ namespace TSLib.SaveSystem
             onSave.TriggerEvent();
         }
 
-        public async UniTask LoadAsync(string fileName, JsonSerializerSettings settings = null, CancellationToken ct = default)
+        public async UniTask LoadAsync<T>(string fileName, JsonSerializerSettings settings = null, CancellationToken ct = default) where T : GameDataBase
         {
-            GameData = await _fileOperator.LoadFileAsync(fileName, settings, ct);
+            GameData = await _fileOperator.LoadFileAsync<T>(fileName, settings, ct);
 
             if (GameData == null) return;
 

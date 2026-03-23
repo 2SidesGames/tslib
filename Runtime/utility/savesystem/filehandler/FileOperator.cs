@@ -20,7 +20,7 @@ namespace TSLib.SaveSystem.FileHandler
             _directoryPath = Application.persistentDataPath;
         }
 
-        public void SaveFile(GameDataBase gameData, bool overwrite = true)
+        public void SaveFile<T>(T gameData, bool overwrite = true) where T : GameDataBase
         {
             if (gameData == null) throw new ArgumentNullException(
                 "(missing) there is no data to save.");
@@ -35,13 +35,13 @@ namespace TSLib.SaveSystem.FileHandler
             File.WriteAllText(filePath, _serializer.Serialize(gameData));
         }
 
-        public GameDataBase LoadFile(string fileName, JsonSerializerSettings settings = null)
+        public T LoadFile<T>(string fileName, JsonSerializerSettings settings = null) where T : GameDataBase
         {
             string filePath = GetFilePath(fileName);
 
             if (!File.Exists(filePath)) return null;
 
-            return _serializer.Deserialize<GameDataBase>(File.ReadAllText(filePath), settings);
+            return _serializer.Deserialize<T>(File.ReadAllText(filePath), settings);
         }
 
         public void DeleteFile(string fileName)
@@ -63,7 +63,7 @@ namespace TSLib.SaveSystem.FileHandler
             }
         }
 
-        public async UniTask SaveFileAsync(GameDataBase gameData, bool overwrite = true, CancellationToken ct = default)
+        public async UniTask SaveFileAsync<T>(T gameData, bool overwrite = true, CancellationToken ct = default) where T : GameDataBase
         {
             if (gameData == null)
                 throw new ArgumentNullException(nameof(gameData), "There is no data to save.");
@@ -91,12 +91,12 @@ namespace TSLib.SaveSystem.FileHandler
             }
         }
 
-        public async UniTask<GameDataBase> LoadFileAsync(string fileName, JsonSerializerSettings settings = null, CancellationToken ct = default)
+        public async UniTask<T> LoadFileAsync<T>(string fileName, JsonSerializerSettings settings = null, CancellationToken ct = default) where T : GameDataBase
         {
             string filePath = GetFilePath(fileName);
 
             if (!File.Exists(filePath))
-                return null;
+                return default;
 
             string json = await File.ReadAllTextAsync(filePath, ct);
 
@@ -105,7 +105,7 @@ namespace TSLib.SaveSystem.FileHandler
             try
             {
                 ct.ThrowIfCancellationRequested();
-                return _serializer.Deserialize<GameDataBase>(json, settings);
+                return _serializer.Deserialize<T>(json, settings);
             }
             finally
             {

@@ -5,9 +5,9 @@ namespace TSLib.SaveSystem.FileHandler
 {
     public interface IFileOperator
     {
-        public void SaveFile(GameDataBase gameData, bool overwrite);
+        public void SaveFile<T>(T gameData, bool overwrite) where T : GameDataBase;
 
-        public GameDataBase LoadFile(string fileName, JsonSerializerSettings settings);
+        public T LoadFile<T>(string fileName, JsonSerializerSettings settings) where T : GameDataBase;
 
         public void DeleteFile(string fileName);
 
