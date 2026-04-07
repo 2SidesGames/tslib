@@ -24,7 +24,7 @@ namespace TSLib.Utility.Management.Component.Capabilities
             }
         }
 
-        public override void Bind(SceneCtx sceneCtx, AppCtx appCtx)
+        public override void Inject(SceneCtx sceneCtx, AppCtx appCtx)
         {
             if (Components == null) throw new InvalidOperationException(
                 "(missing) components storage uninitialized.");
@@ -33,7 +33,7 @@ namespace TSLib.Utility.Management.Component.Capabilities
             {
                 var component = Components[i];
                 if (component == null) continue;
-                component.Bind(sceneCtx, appCtx);
+                component.Inject(sceneCtx, appCtx);
             }
         }
 
@@ -76,10 +76,17 @@ namespace TSLib.Utility.Management.Component.Capabilities
             }
         }
 
-        protected override void OnDestroy()
+        protected virtual void OnApplicationQuit()
         {
-            Unregister();
-            Deconfigure();
+            if (Components == null) throw new InvalidOperationException(
+                "(missing) components storage uninitialized.");
+
+            for (int i = 0; i < Components.Length; i++)
+            {
+                var component = Components[i];
+                if (component == null) continue;
+                component.Destroy();
+            }
         }
     }
 }

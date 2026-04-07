@@ -2,8 +2,8 @@ using TSLib.Utility.Patterns.Scene.Contexts;
 
 namespace TSLib.Utility.Management.Component.Capabilities
 {
-    public interface IBinding
+    public interface IInjectable
     {
-        public void Bind(SceneCtx sceneCtx, AppCtx appCtx);
+        public void Inject(SceneCtx sceneCtx, AppCtx appCtx);
     }
 }
