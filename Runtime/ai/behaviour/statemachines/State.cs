@@ -42,7 +42,7 @@ namespace TSLib.AI.Behaviour.StateMachines
             if (OnExit != null) OnExit.TriggerEvent();
         }
 
-        public void Bind(SceneCtx sceneCtx, AppCtx appCtx)
+        public void Inject(SceneCtx sceneCtx, AppCtx appCtx)
         {
             SceneCtx = sceneCtx;
             AppCtx = appCtx;

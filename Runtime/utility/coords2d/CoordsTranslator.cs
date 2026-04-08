@@ -6,7 +6,7 @@ namespace TSLib.Utility.Coords2D
     /// <summary>
     /// Provides helpers to translate between screen, world, and viewport coordinates.
     /// </summary>
-    public static class Coords2D
+    public static class CoordsTranslator
     {
         /// <summary>
         /// Converts a screen position into world coordinates.
