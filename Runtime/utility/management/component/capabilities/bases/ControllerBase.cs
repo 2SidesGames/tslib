@@ -85,7 +85,7 @@ namespace TSLib.Utility.Management.Component.Capabilities
             {
                 var component = Components[i];
                 if (component == null) continue;
-                component.Destroy();
+                component.Deconfigure();
             }
         }
     }
