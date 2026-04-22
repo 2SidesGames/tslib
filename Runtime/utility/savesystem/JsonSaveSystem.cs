@@ -9,7 +9,7 @@ using TSLib.Utility.Management.Component.Capabilities;
 
 namespace TSLib.SaveSystem
 {
-    public class JsonSaveSystem : ComponentBase
+    public class JsonSaveSystem : TSComponent
     {
         public GameDataBase GameData { get; set; }
 

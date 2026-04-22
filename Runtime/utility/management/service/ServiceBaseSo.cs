@@ -12,16 +12,16 @@ namespace TSLib.Utility.Management.Service
     public abstract class ServiceBaseSo : ScriptableObject
     {
         // Stores registered components indexed by their concrete type
-        private readonly Dictionary<Type, ComponentBase> _components = new();
+        private readonly Dictionary<Type, TSComponent> _components = new();
 
         // Currently registered controller for this service
-        private ControllerBase _controller;
+        private TSController _controller;
 
         /// Registers a controller for this service.
         /// Only one controller can be registered at a time.
         /// </summary>
         /// <param name="controller">Controller instance to register.</param>
-        public void RegisterController(ControllerBase controller)
+        public void RegisterController(TSController controller)
         {
             if (controller == null)
                 throw new ArgumentNullException(nameof(controller));
@@ -32,7 +32,7 @@ namespace TSLib.Utility.Management.Service
         /// <summary>
         /// Returns the currently registered controller, or null if none is registered.
         /// </summary>
-        public T GetController<T>() where T : ControllerBase => (T)_controller;
+        public T GetController<T>() where T : TSController => (T)_controller;
 
         /// <summary>
         /// Unregisters the currently registered controller.
@@ -44,7 +44,7 @@ namespace TSLib.Utility.Management.Service
         /// If a component of the same type already exists, it is overwritten.
         /// </summary>
         /// <param name="component">Component instance to register.</param>
-        public void RegisterComponent(ComponentBase component)
+        public void RegisterComponent(TSComponent component)
         {
             if (_components == null)
                 throw new ArgumentNullException(nameof(_components));
@@ -60,7 +60,7 @@ namespace TSLib.Utility.Management.Service
         /// Returns null if the component is not found or no components are registered.
         /// </summary>
         /// <typeparam name="T">Component type to retrieve.</typeparam>
-        public T GetComponent<T>() where T : ComponentBase
+        public T GetComponent<T>() where T : TSComponent
         {
             if (_components?.Count == 0) return null;
 
@@ -73,7 +73,7 @@ namespace TSLib.Utility.Management.Service
         /// </summary>
         /// <typeparam name="T">Component type to unregister.</typeparam>
         /// <returns>True if the component was removed; otherwise false.</returns>
-        public bool UnregisterComponent<T>() where T : ComponentBase
+        public bool UnregisterComponent<T>() where T : TSComponent
         {
             if (_components == null)
                 throw new ArgumentNullException(nameof(_components));
@@ -86,7 +86,7 @@ namespace TSLib.Utility.Management.Service
         /// Each component is registered using its concrete type.
         /// </summary>
         /// <param name="components">Array of components to register.</param>
-        public void RegisterComponents(ComponentBase[] components)
+        public void RegisterComponents(TSComponent[] components)
         {
             if (components == null)
                 throw new ArgumentNullException(nameof(components));
@@ -111,7 +111,7 @@ namespace TSLib.Utility.Management.Service
         /// True if all components were successfully removed;
         /// false if one or more components were not found.
         /// </returns>
-        public bool UnregisterComponents(ComponentBase[] components)
+        public bool UnregisterComponents(TSComponent[] components)
         {
             if (_components == null)
                 throw new ArgumentNullException(nameof(_components));
