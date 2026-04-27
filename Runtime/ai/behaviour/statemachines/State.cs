@@ -1,0 +1,58 @@
+﻿using TSLib.Utility.Patterns.EventChannels.Primitive;
+using TSLib.Utility.Patterns.Scene.Contexts;
+
+namespace TSLib.AI.Behaviour.StateMachines
+{
+    /// <summary>
+    /// Base class for all states used by a finite state machine (FSM).
+    /// A state encapsulates behavior that is executed while it is active.
+    /// </summary>
+    public abstract class State
+    {
+        protected SceneCtx SceneCtx { get; private set; }
+        protected AppCtx AppCtx { get; private set; }
+
+        protected VoidChannel_So OnEnter { get; set; }
+        protected VoidChannel_So OnExit { get; set; }
+
+        /// <summary>
+        /// Called once when the FSM enters this state.
+        /// Use this method to initialize state-specific data,
+        /// register listeners, prepare behavior, etc.
+        /// </summary>
+        public virtual void Enter()
+        {
+            if (OnEnter != null) OnEnter.TriggerEvent();
+        }
+
+        /// <summary>
+        /// Called every update cycle while this state is the current active state.
+        /// Contains the main behavior logic of the state.
+        /// </summary>
+        /// <param name="stateMachine">Reference to the owner state machine of this state.</param>
+        public virtual void Execute(StateMachineBase stateMachine, float deltaTime) { }
+
+        /// <summary>
+        /// Called once when the FSM exits this state.
+        /// Use this method to clean up state-specific data,
+        /// unregister listeners,  stop ongoing behavior, etc.
+        /// </summary>
+        public virtual void Exit()
+        {
+            if (OnExit != null) OnExit.TriggerEvent();
+        }
+
+        public void Inject(SceneCtx sceneCtx, AppCtx appCtx)
+        {
+            SceneCtx = sceneCtx;
+            AppCtx = appCtx;
+        }
+
+        public void Configure(StateConfig_So config)
+        {
+            OnEnter = config.OnEnter ? config.OnEnter : null;
+            OnExit = config.OnExit ? config.OnExit : null;
+        }
+    }
+}
+
