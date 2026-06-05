@@ -6,11 +6,11 @@ namespace TSLib.SaveSystem.FileHandler
     {
         public string Extension => ".json";
 
-        private readonly JsonSerializerSettings _settings;
+        private readonly JsonSerializerSettings settings;
 
         public JsonSerializer()
         {
-            _settings = new()
+            settings = new()
             {
                 TypeNameHandling = TypeNameHandling.Auto
             };
@@ -18,12 +18,12 @@ namespace TSLib.SaveSystem.FileHandler
 
         public string Serialize<T>(T serializableObject)
         {
-            return JsonConvert.SerializeObject(serializableObject, Formatting.Indented, _settings);
+            return JsonConvert.SerializeObject(serializableObject, Formatting.Indented, settings);
         }
 
         public T Deserialize<T>(string json, JsonSerializerSettings settings = null)
         {
-            return JsonConvert.DeserializeObject<T>(json, settings ?? _settings);
+            return JsonConvert.DeserializeObject<T>(json, settings ?? this.settings);
         }
     }
 }

@@ -1,6 +1,6 @@
 namespace TSLib.SaveSystem.FileData
 {
-    public abstract class GameDataBase
+    public abstract class TS_GameData
     {
         public string FileName { get; set; }
     }

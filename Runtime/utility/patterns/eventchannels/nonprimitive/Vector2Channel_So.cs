@@ -5,5 +5,5 @@ namespace TSLib.Utility.Patterns.EventChannels.NonPrimitive
         fileName = "Vector2Channel",
         menuName = "Event Channels/NonPrimitive/Vector2 Channel"
     )]
-    public class Vector2Channel_So : ChannelBaseT1_So<Vector2> { }
+    public class Vector2Channel_So : TS_ChannelT1_So<Vector2> { }
 }

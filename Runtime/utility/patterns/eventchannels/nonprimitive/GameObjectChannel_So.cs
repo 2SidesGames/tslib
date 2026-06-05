@@ -6,6 +6,6 @@ namespace TSLib.Utility.Patterns.EventChannels.NonPrimitive
         fileName = "GameObjectChannel",
         menuName = "Event Channels/NonPrimitive/GameObject Channel"
     )]
-    public class GameObjectChannel_So : ChannelBaseT1_So<GameObject> { }
+    public class GameObjectChannel_So : TS_ChannelT1_So<GameObject> { }
 }
 

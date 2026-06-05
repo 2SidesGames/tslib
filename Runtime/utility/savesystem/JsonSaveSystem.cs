@@ -9,46 +9,46 @@ using TSLib.Utility.Management.Component.Capabilities;
 
 namespace TSLib.SaveSystem
 {
-    public class JsonSaveSystem : TSComponent
+    public class JsonSaveSystem : TS_Component
     {
-        public GameDataBase GameData { get; set; }
+        public TS_GameData GameData { get; set; }
 
-        private FileOperator _fileOperator;
+        private FileOperator fileOperator;
 
         public override void Initialize()
         {
             var serializer = new FileHandler.JsonSerializer();
-            _fileOperator = new FileOperator(serializer);
+            fileOperator = new FileOperator(serializer);
         }
 
         public void Save()
         {
-            _fileOperator.SaveFile(GameData, true);
+            fileOperator.SaveFile(GameData, true);
         }
 
-        public void Load<T>(string fileName, JsonSerializerSettings settings = null) where T : GameDataBase
+        public void Load<T>(string fileName, JsonSerializerSettings settings = null) where T : TS_GameData
         {
-            GameData = _fileOperator.LoadFile<T>(fileName, settings);
+            GameData = fileOperator.LoadFile<T>(fileName, settings);
         }
 
         public void Delete(string fileName)
         {
-            _fileOperator.DeleteFile(fileName);
+            fileOperator.DeleteFile(fileName);
         }
 
         public void DeleteAll()
         {
-            _fileOperator.DeleteAllFiles();
+            fileOperator.DeleteAllFiles();
         }
 
         public async UniTask SaveAsync(CancellationToken ct)
         {
-            await _fileOperator.SaveFileAsync(GameData, true, ct);
+            await fileOperator.SaveFileAsync(GameData, true, ct);
         }
 
-        public async UniTask LoadAsync<T>(string fileName, JsonSerializerSettings settings = null, CancellationToken ct = default) where T : GameDataBase
+        public async UniTask LoadAsync<T>(string fileName, JsonSerializerSettings settings = null, CancellationToken ct = default) where T : TS_GameData
         {
-            GameData = await _fileOperator.LoadFileAsync<T>(fileName, settings, ct);
+            GameData = await fileOperator.LoadFileAsync<T>(fileName, settings, ct);
         }
     }
 }

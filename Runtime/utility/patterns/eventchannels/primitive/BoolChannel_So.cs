@@ -6,6 +6,6 @@ namespace TSLib.Utility.Patterns.EventChannels.Primitive
         fileName = "BoolChannel",
         menuName = "Event Channels/Primitive/Bool Channel"
     )]
-    public class BoolChannel_So : ChannelBaseT1_So<bool> { }
+    public class BoolChannel_So : TS_ChannelT1_So<bool> { }
 }
 

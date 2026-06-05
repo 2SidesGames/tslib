@@ -6,7 +6,7 @@ namespace TSLib.Utility.Patterns.EventChannels.NonPrimitive
         fileName = "MonoBehaviourChannel",
         menuName = "Event Channels/NonPrimitive/MonoBehaviour Channel"
     )]
-    public class MonoBehaviourChannel_So : ChannelBaseT1_So<MonoBehaviour> { }
+    public class MonoBehaviourChannel_So : TS_ChannelT1_So<MonoBehaviour> { }
 
 }
 

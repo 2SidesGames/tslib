@@ -6,6 +6,6 @@ namespace TSLib.Utility.Patterns.EventChannels.Primitive
         fileName = "IntChannel",
         menuName = "Event Channels/Primitive/Int Channel"
     )]
-    public class IntChannel_So : ChannelBaseT1_So<int> { }
+    public class IntChannel_So : TS_ChannelT1_So<int> { }
 }
 

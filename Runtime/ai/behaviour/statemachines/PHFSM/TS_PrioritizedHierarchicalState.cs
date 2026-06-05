@@ -5,7 +5,7 @@ using TSLib.Utility.Patterns.EventChannels.Primitive;
 
 namespace TSLib.AI.Behaviour.StateMachines.PHFSM
 {
-    public abstract class PHS : HierarchicalState
+    public abstract class TS_PrioritizedHierarchicalState : TS_HierarchicalState
     {
         public int Priority { get; set; }
         public bool IsInterruptible { private get; set; }
@@ -18,10 +18,10 @@ namespace TSLib.AI.Behaviour.StateMachines.PHFSM
         public VoidChannel_So OnEnterCondition { private get; set; }
         public VoidChannel_So OnExitCondition { private get; set; }
 
-        private IComparer<Transition> _comparer;
+        private IComparer<Transition> comparer;
 
 
-        public void Configure(PHSConfig_So config, IComparer<Transition> comparer)
+        public void Configure(PrioritizedHierarchicalState_Config_So config, IComparer<Transition> comparer)
         {
             if (config == null) throw new ArgumentNullException(nameof(config));
 
@@ -35,7 +35,7 @@ namespace TSLib.AI.Behaviour.StateMachines.PHFSM
             OnExitCondition = config.OnExitCondition ? config.OnExitCondition : null;
 
             SelfTransition = new Transition(this);
-            _comparer = comparer ?? throw new ArgumentNullException(nameof(comparer));
+            this.comparer = comparer ?? throw new ArgumentNullException(nameof(comparer));
 
             if (OnEnterCondition != null) OnEnterCondition.Subscribe(EnableEnter);
             if (OnExitCondition != null) OnExitCondition.Subscribe(EnableExit);
@@ -49,7 +49,7 @@ namespace TSLib.AI.Behaviour.StateMachines.PHFSM
             EnterLogic();
         }
 
-        public sealed override void Execute(StateMachineBase stateMachine, float deltaTime)
+        public sealed override void Execute(TS_StateMachine stateMachine, float deltaTime)
         {
             ExecuteLogic(stateMachine, deltaTime);
 
@@ -89,7 +89,7 @@ namespace TSLib.AI.Behaviour.StateMachines.PHFSM
             if (transitionList.Count == 0) throw new InvalidOperationException("(empty) no transitions to set.");
 
             TransitionList = transitionList;
-            TransitionList.Sort(_comparer);
+            TransitionList.Sort(comparer);
         }
 
         public void UnsubscribeConditionEvents()
@@ -99,7 +99,7 @@ namespace TSLib.AI.Behaviour.StateMachines.PHFSM
         }
 
         protected virtual void EnterLogic() { }
-        protected virtual void ExecuteLogic(StateMachineBase stateMachine, float deltaTime) { }
+        protected virtual void ExecuteLogic(TS_StateMachine stateMachine, float deltaTime) { }
         protected virtual void ExitLogic() { }
 
         protected virtual void EnableEnter() => EnterCondition = true;
@@ -107,9 +107,9 @@ namespace TSLib.AI.Behaviour.StateMachines.PHFSM
         protected virtual void DisableEnter() => EnterCondition = false;
         protected virtual void DisableExit() => ExitCondition = false;
 
-        private PHS GetHigherPriorityState(Transition t1, Transition t2)
+        private TS_PrioritizedHierarchicalState GetHigherPriorityState(Transition t1, Transition t2)
         {
-            return _comparer.Compare(t1, t2) <= 0 ? t1.NextState : t2.NextState;
+            return comparer.Compare(t1, t2) <= 0 ? t1.NextState : t2.NextState;
         }
     }
 }

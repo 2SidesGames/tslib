@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace TSLib.Utility.Management.Component.Capabilities
 {
-    public abstract class TSComponent : MonoBehaviour, IComponent
+    public abstract class TS_Component : MonoBehaviour, IComponent
     {
         protected SceneCtx SceneCtx { get; set; }
         protected AppCtx AppCtx { get; set; }

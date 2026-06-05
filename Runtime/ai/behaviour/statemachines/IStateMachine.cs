@@ -4,11 +4,11 @@ namespace TSLib.AI.Behaviour.StateMachines
     {
         public void Execute(float deltaTime);
 
-        public void TransitionTo(State newState, bool doEnter, bool doExit, bool allowSameState);
+        public void TransitionTo(TS_State newState, bool doEnter, bool doExit, bool allowSameState);
 
-        public void RevertToPrevious(State previousState, bool doEnter, bool doExit, bool allowSameState);
+        public void RevertToPrevious(TS_State previousState, bool doEnter, bool doExit, bool allowSameState);
 
-        public bool IsSameState(State s1, State s2);
+        public bool IsSameState(TS_State s1, TS_State s2);
 
         public void Start(bool doEnter);
         public void Run();

@@ -3,17 +3,17 @@ using UnityEngine;
 
 namespace TSLib.Utility.Patterns.Singleton
 {
-    public abstract class Singleton<T> : MonoBehaviour where T : MonoBehaviour
+    public abstract class TS_Singleton<T> : MonoBehaviour where T : MonoBehaviour
     {
         protected virtual bool Persistent => true;
         protected static T instance;
-        private static bool _isQuitting;
+        private static bool isQuitting;
 
         public static T Instance
         {
             get
             {
-                if (_isQuitting) return null;
+                if (isQuitting) return null;
 
                 if (instance != null) return instance;
 
@@ -46,7 +46,7 @@ namespace TSLib.Utility.Patterns.Singleton
             instance = null;
         }
 
-        protected virtual void OnApplicationQuit() => _isQuitting = true;
+        protected virtual void OnApplicationQuit() => isQuitting = true;
 
         protected virtual void OnSingletonAwake() { }
     }

@@ -6,6 +6,6 @@ namespace TSLib.Utility.Patterns.EventChannels.Primitive
         fileName = "FloatChannel",
         menuName = "Event Channels/Primitive/Float Channel"
     )]
-    public class FloatChannel_So : ChannelBaseT1_So<float> { }
+    public class FloatChannel_So : TS_ChannelT1_So<float> { }
 }
 
