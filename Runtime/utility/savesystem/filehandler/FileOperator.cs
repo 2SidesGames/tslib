@@ -10,17 +10,17 @@ namespace TSLib.SaveSystem.FileHandler
 {
     public class FileOperator : IFileOperator
     {
-        private readonly ISerializer _serializer;
+        private readonly ISerializer serializer;
 
-        private readonly string _directoryPath;
+        private readonly string directoryPath;
 
         public FileOperator(ISerializer serializer)
         {
-            _serializer = serializer;
-            _directoryPath = Application.persistentDataPath;
+            this.serializer = serializer;
+            directoryPath = Application.persistentDataPath;
         }
 
-        public void SaveFile<T>(T gameData, bool overwrite = true) where T : GameDataBase
+        public void SaveFile<T>(T gameData, bool overwrite = true) where T : TS_GameData
         {
             if (gameData == null) throw new ArgumentNullException(
                 "(missing) there is no data to save.");
@@ -30,18 +30,18 @@ namespace TSLib.SaveSystem.FileHandler
             if (!overwrite && File.Exists(filePath))
             {
                 throw new IOException(
-                    $"'{gameData.FileName}.{_serializer.Extension}' already exists.");
+                    $"'{gameData.FileName}.{serializer.Extension}' already exists.");
             }
-            File.WriteAllText(filePath, _serializer.Serialize(gameData));
+            File.WriteAllText(filePath, serializer.Serialize(gameData));
         }
 
-        public T LoadFile<T>(string fileName, JsonSerializerSettings settings = null) where T : GameDataBase
+        public T LoadFile<T>(string fileName, JsonSerializerSettings settings = null) where T : TS_GameData
         {
             string filePath = GetFilePath(fileName);
 
             if (!File.Exists(filePath)) return null;
 
-            return _serializer.Deserialize<T>(File.ReadAllText(filePath), settings);
+            return serializer.Deserialize<T>(File.ReadAllText(filePath), settings);
         }
 
         public void DeleteFile(string fileName)
@@ -55,7 +55,7 @@ namespace TSLib.SaveSystem.FileHandler
 
         public void DeleteAllFiles()
         {
-            var files = Directory.GetFiles(_directoryPath);
+            var files = Directory.GetFiles(directoryPath);
 
             foreach (var fileName in files)
             {
@@ -63,7 +63,7 @@ namespace TSLib.SaveSystem.FileHandler
             }
         }
 
-        public async UniTask SaveFileAsync<T>(T gameData, bool overwrite = true, CancellationToken ct = default) where T : GameDataBase
+        public async UniTask SaveFileAsync<T>(T gameData, bool overwrite = true, CancellationToken ct = default) where T : TS_GameData
         {
             if (gameData == null)
                 throw new ArgumentNullException(nameof(gameData), "There is no data to save.");
@@ -71,7 +71,7 @@ namespace TSLib.SaveSystem.FileHandler
             string filePath = GetFilePath(gameData.FileName);
 
             if (!overwrite && File.Exists(filePath))
-                throw new IOException($"'{gameData.FileName}.{_serializer.Extension}' already exists.");
+                throw new IOException($"'{gameData.FileName}.{serializer.Extension}' already exists.");
 
             await UniTask.SwitchToThreadPool();
 
@@ -79,7 +79,7 @@ namespace TSLib.SaveSystem.FileHandler
             {
                 ct.ThrowIfCancellationRequested();
 
-                string json = _serializer.Serialize(gameData);
+                string json = serializer.Serialize(gameData);
 
                 ct.ThrowIfCancellationRequested();
 
@@ -91,7 +91,7 @@ namespace TSLib.SaveSystem.FileHandler
             }
         }
 
-        public async UniTask<T> LoadFileAsync<T>(string fileName, JsonSerializerSettings settings = null, CancellationToken ct = default) where T : GameDataBase
+        public async UniTask<T> LoadFileAsync<T>(string fileName, JsonSerializerSettings settings = null, CancellationToken ct = default) where T : TS_GameData
         {
             string filePath = GetFilePath(fileName);
 
@@ -105,7 +105,7 @@ namespace TSLib.SaveSystem.FileHandler
             try
             {
                 ct.ThrowIfCancellationRequested();
-                return _serializer.Deserialize<T>(json, settings);
+                return serializer.Deserialize<T>(json, settings);
             }
             finally
             {
@@ -115,7 +115,7 @@ namespace TSLib.SaveSystem.FileHandler
 
         private string GetFilePath(string fileName)
         {
-            return Path.Combine(_directoryPath, string.Concat(fileName, _serializer.Extension));
+            return Path.Combine(directoryPath, string.Concat(fileName, serializer.Extension));
         }
     }
 }

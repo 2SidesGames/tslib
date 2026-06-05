@@ -6,6 +6,6 @@ namespace TSLib.Utility.Patterns.EventChannels.Primitive
         fileName = "LongChannel",
         menuName = "Event Channels/Primitive/Long Channel"
     )]
-    public class LongChannel_So : ChannelBaseT1_So<long> { }
+    public class LongChannel_So : TS_ChannelT1_So<long> { }
 }
 

@@ -6,6 +6,6 @@ namespace TSLib.Utility.Patterns.EventChannels.NonPrimitive
         fileName = "SceneChannel",
         menuName = "Event Channels/NonPrimitive/Scene Channel"
     )]
-    public class SceneChannel_So : ChannelBaseT1_So<UnityEngine.SceneManagement.Scene> { }
+    public class SceneChannel_So : TS_ChannelT1_So<UnityEngine.SceneManagement.Scene> { }
 }
 

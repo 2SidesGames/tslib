@@ -5,10 +5,10 @@ using UnityEngine;
 namespace TSLib.AI.Behaviour.StateMachines.PHFSM
 {
     [CreateAssetMenu(
-    fileName = "PHSConfig",
-    menuName = "Scriptable Objects/HFSM/PHSConfig"
+    fileName = "PrioritizedHierarchicalState_Config",
+    menuName = "Scriptable Objects/HFSM/Prioritized Hierarchical State Config"
 )]
-    public class PHSConfig_So : StateConfig_So
+    public class PrioritizedHierarchicalState_Config_So : StateConfig_So
     {
         [field: SerializeField] public int Priority { get; private set; }
         [field: SerializeField] public bool IsInterruptible { get; private set; }

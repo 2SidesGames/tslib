@@ -1,16 +1,13 @@
 using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using TSLib.Utility.Patterns.EventChannels.NonPrimitive;
 using TSLib.Utility.Patterns.Scene.Contexts;
 using UnityEngine;
 
 namespace TSLib.Utility.Patterns.Scene.Loading
 {
-    public abstract class SceneEntryBase : MonoBehaviour
+    public abstract class TS_SceneEntry : MonoBehaviour
     {
-        [SerializeField] private SceneChannel_So onSceneLoaded;
-
         protected AppCtx AppCtx;
         protected SceneCtx SceneCtx;
 
@@ -37,9 +34,6 @@ namespace TSLib.Utility.Patterns.Scene.Loading
             await ExecuteCustomOperationsAsync(ct);
             await LoadSceneAdditiveAsync(ct);
             await UnLoadSceneAdditiveAsync(ct);
-
-            if (onSceneLoaded == null) return;
-            onSceneLoaded.TriggerEvent(gameObject.scene);
         }
 
         protected virtual UniTask PreconfigureSceneAsync(CancellationToken ct) => UniTask.CompletedTask;

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace TSLib.Utility.Patterns.EventChannels
 {
-    public abstract class ChannelBaseT1_So<T> : ScriptableObject
+    public abstract class TS_ChannelT1_So<T> : ScriptableObject
     {
         /// <summary>
         /// Channel event.

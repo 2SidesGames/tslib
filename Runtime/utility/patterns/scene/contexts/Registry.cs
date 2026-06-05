@@ -9,19 +9,19 @@ namespace TSLib.Utility.Patterns.Scene.Contexts
 
         public void SetActive(bool active) => Active = active;
 
-        private readonly Dictionary<Type, T> _registry = new();
+        private readonly Dictionary<Type, T> registry = new();
 
         public void Register(T element)
         {
             if (element == null)
                 throw new ArgumentNullException(nameof(element));
 
-            if (_registry == null) throw new InvalidOperationException(
+            if (registry == null) throw new InvalidOperationException(
                 "(missing) registry storage uninitialized.");
 
             var type = element.GetType();
 
-            if (_registry.ContainsKey(type))
+            if (registry.ContainsKey(type))
             {
                 throw new InvalidOperationException(
                     $"(duplicate) An element of type '{type.FullName}' is already registered. " +
@@ -29,15 +29,15 @@ namespace TSLib.Utility.Patterns.Scene.Contexts
                 );
             }
 
-            _registry[type] = element;
+            registry[type] = element;
         }
 
         public bool Unregister<Type>()
         {
-            if (_registry == null) throw new InvalidOperationException(
+            if (registry == null) throw new InvalidOperationException(
                 "(missing) registry storage uninitialized.");
 
-            return _registry.Remove(typeof(Type));
+            return registry.Remove(typeof(Type));
         }
 
         public Type Get<Type>() where Type : T
@@ -45,10 +45,10 @@ namespace TSLib.Utility.Patterns.Scene.Contexts
             if (!Active) throw new InvalidOperationException(
                 "(disabled) the getter is currently disabled.");
 
-            if (_registry == null) throw new InvalidOperationException(
+            if (registry == null) throw new InvalidOperationException(
             "(missing) registry storage uninitialized.");
 
-            if (_registry.TryGetValue(typeof(Type), out var element))
+            if (registry.TryGetValue(typeof(Type), out var element))
                 return (Type)element;
 
             return default;
@@ -66,10 +66,10 @@ namespace TSLib.Utility.Patterns.Scene.Contexts
 
         public void Clear()
         {
-            if (_registry == null) throw new InvalidOperationException(
+            if (registry == null) throw new InvalidOperationException(
                 "(missing) _registry storage uninitialized.");
 
-            _registry.Clear();
+            registry.Clear();
         }
     }
 }

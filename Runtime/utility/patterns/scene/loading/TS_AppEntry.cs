@@ -2,17 +2,14 @@ using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using TSLib.Utility.Debug.Logging;
-using TSLib.Utility.Patterns.EventChannels.NonPrimitive;
 using TSLib.Utility.Patterns.Scene.Contexts;
 using UnityEngine;
 
 namespace TSLib.Utility.Patterns.Scene.Loading
 {
-    public abstract class AppEntryBase : MonoBehaviour
+    public abstract class TS_AppEntry : MonoBehaviour
     {
-        [SerializeField] private SceneChannel_So onAppLoaded;
-
-        public AppCtx Context { get; protected set; }
+        public AppCtx AppCtx { get; protected set; }
 
         private async void Start()
         {
@@ -21,7 +18,7 @@ namespace TSLib.Utility.Patterns.Scene.Loading
             try
             {
                 await ConfigureAppAsync(ct);
-                Context = await CreateContextAsync(ct);
+                AppCtx = await CreateContextAsync(ct);
                 await RegisterUtilitiesCtxAsync(ct);
                 await RegisterSharedCtxAsync(ct);
                 await LoadFirstSceneAdditiveAsync(ct);
@@ -33,8 +30,8 @@ namespace TSLib.Utility.Patterns.Scene.Loading
                 if (!scene.IsValid() || !scene.isLoaded)
                     throw new InvalidOperationException("(not loaded) scene was not loaded");
 
-                if (onAppLoaded != null)
-                    onAppLoaded.TriggerEvent(scene);
+                // persistent, it acts as the container of app context.
+                DontDestroyOnLoad(gameObject);
             }
             catch (OperationCanceledException) when (ct.IsCancellationRequested)
             {
@@ -43,11 +40,6 @@ namespace TSLib.Utility.Patterns.Scene.Loading
             catch (Exception ex)
             {
                 TSLogger.LogException(ex, this);
-            }
-            finally
-            {
-                // persistent, it acts as the container of app context.
-                DontDestroyOnLoad(gameObject);
             }
         }
 

@@ -5,20 +5,20 @@ using UnityEngine;
 
 namespace TSLib.Utility.Management.Component.Capabilities
 {
-    public abstract class TSController : TSComponent, IRegistrable
+    public abstract class TS_Controller : TS_Component, IRegistrable
     {
-        [SerializeField] protected TSComponent[] ComponentArray;
-        protected Dictionary<Type, TSComponent> ComponentDict;
+        [SerializeField] protected TS_Component[] ComponentArray;
+        protected Dictionary<Type, TS_Component> ComponentDict;
 
         public virtual void Register(SceneCtx sceneCtx, AppCtx appCtx) { }
-        protected virtual void Unregister() { }
+        public virtual void Unregister() { }
 
         public override void Initialize()
         {
             if (ComponentArray == null) throw new InvalidOperationException(
                 "(missing) components storage uninitialized.");
 
-            ComponentDict = new Dictionary<Type, TSComponent>(ComponentArray.Length);
+            ComponentDict = new Dictionary<Type, TS_Component>(ComponentArray.Length);
 
             for (int i = 0; i < ComponentArray.Length; i++)
             {
@@ -95,7 +95,7 @@ namespace TSLib.Utility.Management.Component.Capabilities
             }
         }
 
-        public T GetTSComponent<T>() where T : TSComponent
+        public T GetTSComponent<T>() where T : TS_Component
         {
             if (ComponentDict == null) throw new InvalidOperationException(
                     "(missing) components dictionary uninitialized.");
@@ -106,7 +106,7 @@ namespace TSLib.Utility.Management.Component.Capabilities
                 ? (T)value : null;
         }
 
-        public T RequireTSComponent<T>() where T : TSComponent
+        public T RequireTSComponent<T>() where T : TS_Component
         {
             var component = GetTSComponent<T>();
 

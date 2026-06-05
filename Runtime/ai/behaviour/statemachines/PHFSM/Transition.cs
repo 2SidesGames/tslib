@@ -4,12 +4,12 @@ namespace TSLib.AI.Behaviour.StateMachines.PHFSM
 {
     public class Transition
     {
-        public PHS NextState { get; private set; }
+        public TS_PrioritizedHierarchicalState NextState { get; private set; }
 
         public Transition() { }
-        public Transition(PHS nextState) => SetNextState(nextState);
+        public Transition(TS_PrioritizedHierarchicalState nextState) => SetNextState(nextState);
 
-        public void SetNextState(PHS nextState)
+        public void SetNextState(TS_PrioritizedHierarchicalState nextState)
         {
             if (NextState != null) throw new InvalidOperationException(
                 "(invalid) NextState is already assigned.");

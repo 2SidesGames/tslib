@@ -6,6 +6,6 @@ namespace TSLib.Utility.Patterns.EventChannels.Primitive
         fileName = "StringChannel",
         menuName = "Event Channels/Primitive/String Channel"
     )]
-    public class StringChannel_So : ChannelBaseT1_So<string> { }
+    public class StringChannel_So : TS_ChannelT1_So<string> { }
 }
 
