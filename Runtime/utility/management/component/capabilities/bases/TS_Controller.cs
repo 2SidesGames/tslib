@@ -33,6 +33,9 @@ namespace TSLib.Utility.Management.Component.Capabilities
             if (ComponentArray == null) throw new InvalidOperationException(
                 "(missing) components storage uninitialized.");
 
+            SceneCtx = sceneCtx;
+            AppCtx = appCtx;
+
             for (int i = 0; i < ComponentArray.Length; i++)
             {
                 var component = ComponentArray[i];
