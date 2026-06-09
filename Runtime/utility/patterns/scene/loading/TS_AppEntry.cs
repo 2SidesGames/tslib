@@ -35,10 +35,11 @@ namespace TSLib.Utility.Patterns.Scene.Loading
 
                 await ConfigureAsync(ct);
 
-                // optional
-                await ExecuteCustomOperationsAsync(ct);
+                await PreActivationAsync(ct); // optional
 
                 await ActivateAsync(ct);
+
+                await PostActivationAsync(ct); // optional
 
                 await LoadSceneAdditiveAsync(ct);
 
@@ -53,7 +54,7 @@ namespace TSLib.Utility.Patterns.Scene.Loading
             }
             catch (OperationCanceledException) when (ct.IsCancellationRequested)
             {
-                OnTokenCanceled(); // could be ignored
+                OnTokenCanceled(); // could be ignored // optional
             }
             catch (Exception ex)
             {
@@ -83,7 +84,8 @@ namespace TSLib.Utility.Patterns.Scene.Loading
         protected abstract UniTask LoadSceneAdditiveAsync(CancellationToken ct);
 
         // optional
-        protected virtual UniTask ExecuteCustomOperationsAsync(CancellationToken ct) => UniTask.CompletedTask;
+        protected virtual UniTask PreActivationAsync(CancellationToken ct) => UniTask.CompletedTask;
+        protected virtual UniTask PostActivationAsync(CancellationToken ct) => UniTask.CompletedTask;
         protected virtual void OnTokenCanceled() { }
     }
 }

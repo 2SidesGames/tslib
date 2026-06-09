@@ -24,8 +24,7 @@ namespace TSLib.Utility.Patterns.Scene.Loading
 
             await DeactivateAsync(ct);
 
-            // optional
-            await PreconfigureSceneAsync(ct);
+            await PreconfigureSceneAsync(ct); // optional
 
             await InstantiateAsync(ct);
             await InitializeAsync(ct);
@@ -36,14 +35,14 @@ namespace TSLib.Utility.Patterns.Scene.Loading
 
             await ConfigureAsync(ct);
 
-            // optional
-            await ExecuteCustomOperationsAsync(ct);
+            await PreActivationAsync(ct); // optional
 
             await ActivateAsync(ct);
 
-            // optional
-            await LoadSceneAdditiveAsync(ct);
-            await UnLoadSceneAdditiveAsync(ct);
+            await PostActivationAsync(ct); // optional
+
+            await LoadSceneAdditiveAsync(ct); // optional
+            await UnLoadSceneAdditiveAsync(ct); // optional
         }
 
         protected abstract UniTask DeactivateAsync(CancellationToken ct);
@@ -59,7 +58,8 @@ namespace TSLib.Utility.Patterns.Scene.Loading
         protected abstract UniTask ActivateAsync(CancellationToken ct);
 
         // optional
-        protected virtual UniTask ExecuteCustomOperationsAsync(CancellationToken ct) => UniTask.CompletedTask;
+        protected virtual UniTask PreActivationAsync(CancellationToken ct) => UniTask.CompletedTask;
+        protected virtual UniTask PostActivationAsync(CancellationToken ct) => UniTask.CompletedTask;
         protected virtual UniTask LoadSceneAdditiveAsync(CancellationToken ct) => UniTask.CompletedTask;
         protected virtual UniTask UnLoadSceneAdditiveAsync(CancellationToken ct) => UniTask.CompletedTask;
     }
