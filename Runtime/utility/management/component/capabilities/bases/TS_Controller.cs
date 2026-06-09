@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using TSLib.Utility.Managers.Generators;
 using TSLib.Utility.Patterns.Scene.Contexts;
 using UnityEngine;
 
@@ -27,6 +28,9 @@ namespace TSLib.Utility.Management.Component.Capabilities
 
                 ComponentDict[component.GetType()] = component;
             }
+
+            // set the unique Id for this controller
+            Id = IdGenerator.GenerateId();
         }
 
         public override void Inject(SceneCtx sceneCtx, AppCtx appCtx)
@@ -119,14 +123,6 @@ namespace TSLib.Utility.Management.Component.Capabilities
                     "(missing) component not found.");
 
             return component;
-        }
-
-        public void SetId(int id)
-        {
-            if (Id >= 0)
-                throw new InvalidOperationException("(invalid) the controller already has an ID.");
-
-            Id = id;
         }
     }
 }
