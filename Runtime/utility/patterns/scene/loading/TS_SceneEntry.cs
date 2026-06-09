@@ -23,11 +23,11 @@ namespace TSLib.Utility.Patterns.Scene.Loading
 
             await InstantiateAsync(ct);
             await InitializeAsync(ct);
-            await RegisterAsync(SceneCtx, AppCtx, ct);
+            await InjectAsync(SceneCtx, AppCtx, ct);
+            await RegisterAsync(ct);
 
             SceneCtx.SetActive(true);
 
-            await InjectAsync(SceneCtx, AppCtx, ct);
             await ConfigureAsync(ct);
 
             // optional
@@ -40,8 +40,8 @@ namespace TSLib.Utility.Patterns.Scene.Loading
 
         protected abstract UniTask InstantiateAsync(CancellationToken ct);
         protected abstract UniTask InitializeAsync(CancellationToken ct);
-        protected abstract UniTask RegisterAsync(SceneCtx sceneCtx, AppCtx appCtx, CancellationToken ct);
         protected abstract UniTask InjectAsync(SceneCtx sceneCtx, AppCtx appCtx, CancellationToken ct);
+        protected abstract UniTask RegisterAsync(CancellationToken ct);
         protected abstract UniTask ConfigureAsync(CancellationToken ct);
 
         // optional
