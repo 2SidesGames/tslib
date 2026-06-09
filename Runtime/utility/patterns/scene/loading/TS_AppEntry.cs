@@ -3,18 +3,17 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using TSLib.Utility.Debug.Logging;
 using TSLib.Utility.Patterns.Scene.Contexts;
+using UnityEngine;
 
 namespace TSLib.Utility.Patterns.Scene.Loading
 {
-    public abstract class TS_AppEntry : TS_SceneContainer
+    public abstract class TS_AppEntry : MonoBehaviour
     {
         protected AppCtx AppCtx;
 
         private async void Start()
         {
             var ct = this.GetCancellationTokenOnDestroy();
-
-            CreateSceneContainer();
 
             try
             {

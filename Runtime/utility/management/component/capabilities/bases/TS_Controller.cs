@@ -10,6 +10,7 @@ namespace TSLib.Utility.Management.Component.Capabilities
         [SerializeField] protected TS_Component[] ComponentArray;
         protected Dictionary<Type, TS_Component> ComponentDict;
 
+        public int Id { get; private set; }
 
         public override void Initialize()
         {
@@ -118,6 +119,14 @@ namespace TSLib.Utility.Management.Component.Capabilities
                     "(missing) component not found.");
 
             return component;
+        }
+
+        public void SetId(int id)
+        {
+            if (Id >= 0)
+                throw new InvalidOperationException("(invalid) the controller already has an ID.");
+
+            Id = id;
         }
     }
 }

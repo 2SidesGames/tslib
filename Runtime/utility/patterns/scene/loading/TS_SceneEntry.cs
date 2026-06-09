@@ -1,22 +1,18 @@
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using TSLib.Utility.Management.Component.Capabilities;
 using TSLib.Utility.Patterns.Scene.Contexts;
 using UnityEngine;
 
 namespace TSLib.Utility.Patterns.Scene.Loading
 {
-    public abstract class TS_SceneEntry : TS_SceneContainer
+    public abstract class TS_SceneEntry : MonoBehaviour
     {
         protected AppCtx AppCtx;
         protected SceneCtx SceneCtx;
 
         public async UniTask LoadAsync(AppCtx appCtx, CancellationToken ct)
         {
-            CreateSceneContainer();
-
             AppCtx = appCtx ?? throw new ArgumentNullException(nameof(appCtx));
             SceneCtx = new SceneCtx();
 
