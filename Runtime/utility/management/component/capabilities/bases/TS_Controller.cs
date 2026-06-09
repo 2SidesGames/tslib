@@ -10,8 +10,6 @@ namespace TSLib.Utility.Management.Component.Capabilities
         [SerializeField] protected TS_Component[] ComponentArray;
         protected Dictionary<Type, TS_Component> ComponentDict;
 
-        public virtual void Register(SceneCtx sceneCtx, AppCtx appCtx) { }
-        public virtual void Unregister() { }
 
         public override void Initialize()
         {
@@ -42,6 +40,9 @@ namespace TSLib.Utility.Management.Component.Capabilities
                 component.Inject(sceneCtx, appCtx);
             }
         }
+
+        public virtual void Register() { }
+        public virtual void UnRegister() { }
 
         public override void Configure()
         {
@@ -102,8 +103,8 @@ namespace TSLib.Utility.Management.Component.Capabilities
 
             if (ComponentDict.Count == 0) return null;
 
-            return ComponentDict.TryGetValue(typeof(T), out var value)
-                ? (T)value : null;
+            return ComponentDict.TryGetValue(typeof(T), out var component)
+                ? (T)component : null;
         }
 
         public T RequireTSComponent<T>() where T : TS_Component

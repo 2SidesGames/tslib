@@ -5,8 +5,8 @@ namespace TSLib.Utility.Management.Component.Capabilities
 {
     public abstract class TS_Component : MonoBehaviour, IComponent
     {
-        protected SceneCtx SceneCtx { get; set; }
-        protected AppCtx AppCtx { get; set; }
+        protected SceneCtx SceneCtx;
+        protected AppCtx AppCtx;
         public virtual void Initialize() { }
         public virtual void Inject(SceneCtx sceneCtx, AppCtx appCtx) { }
         public virtual void Configure() { }

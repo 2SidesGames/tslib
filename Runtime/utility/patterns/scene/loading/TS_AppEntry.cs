@@ -3,17 +3,18 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using TSLib.Utility.Debug.Logging;
 using TSLib.Utility.Patterns.Scene.Contexts;
-using UnityEngine;
 
 namespace TSLib.Utility.Patterns.Scene.Loading
 {
-    public abstract class TS_AppEntry : MonoBehaviour
+    public abstract class TS_AppEntry : TS_SceneContainer
     {
         protected AppCtx AppCtx;
 
         private async void Start()
         {
             var ct = this.GetCancellationTokenOnDestroy();
+
+            CreateSceneContainer();
 
             try
             {
@@ -23,6 +24,7 @@ namespace TSLib.Utility.Patterns.Scene.Loading
                 AppCtx.GlobalCtx.SetActive(false);
                 AppCtx.UtilityCtx.SetActive(false);
 
+                await DeactivateAsync(ct);
                 await InstantiateAsync(ct);
                 await InitializeAsync(ct);
                 await InjectAsync(AppCtx, ct);
@@ -35,6 +37,8 @@ namespace TSLib.Utility.Patterns.Scene.Loading
 
                 // optional
                 await ExecuteCustomOperationsAsync(ct);
+
+                await ActivateAsync(ct);
 
                 await LoadSceneAdditiveAsync(ct);
 
@@ -66,11 +70,15 @@ namespace TSLib.Utility.Patterns.Scene.Loading
                 GlobalCtx = new SharedCtx()
             };
         }
+
+        protected abstract UniTask DeactivateAsync(CancellationToken ct);
         protected abstract UniTask InstantiateAsync(CancellationToken ct);
         protected abstract UniTask InitializeAsync(CancellationToken ct);
         protected abstract UniTask InjectAsync(AppCtx appCtx, CancellationToken ct);
         protected abstract UniTask RegisterAsync(CancellationToken ct);
         protected abstract UniTask ConfigureAsync(CancellationToken ct);
+
+        protected abstract UniTask ActivateAsync(CancellationToken ct);
 
         protected abstract UniTask LoadSceneAdditiveAsync(CancellationToken ct);
 
