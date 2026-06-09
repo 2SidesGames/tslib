@@ -27,7 +27,7 @@ namespace TSLib.Utility.Patterns.Scene.Loading
                 await DeactivateAsync(ct);
                 await InstantiateAsync(ct);
                 await InitializeAsync(ct);
-                await InjectAsync(AppCtx, ct);
+                await InjectAsync(ct);
                 await RegisterAsync(ct);
 
                 AppCtx.GlobalCtx.SetActive(true);
@@ -74,7 +74,7 @@ namespace TSLib.Utility.Patterns.Scene.Loading
         protected abstract UniTask DeactivateAsync(CancellationToken ct);
         protected abstract UniTask InstantiateAsync(CancellationToken ct);
         protected abstract UniTask InitializeAsync(CancellationToken ct);
-        protected abstract UniTask InjectAsync(AppCtx appCtx, CancellationToken ct);
+        protected abstract UniTask InjectAsync(CancellationToken ct);
         protected abstract UniTask RegisterAsync(CancellationToken ct);
         protected abstract UniTask ConfigureAsync(CancellationToken ct);
 
