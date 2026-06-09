@@ -33,19 +33,31 @@ namespace TSLib.Utility.Management.Component.Capabilities
             Id = IdGenerator.GenerateId();
         }
 
-        public override void Inject(SceneCtx sceneCtx, AppCtx appCtx)
+        public override void BindContext(SceneCtx sceneCtx, AppCtx appCtx)
         {
             if (ComponentArray == null) throw new InvalidOperationException(
                 "(missing) components storage uninitialized.");
 
-            SceneCtx = sceneCtx;
-            AppCtx = appCtx;
+            base.BindContext(sceneCtx, appCtx);
 
             for (int i = 0; i < ComponentArray.Length; i++)
             {
                 var component = ComponentArray[i];
                 if (component == null) continue;
-                component.Inject(sceneCtx, appCtx);
+                component.BindContext(sceneCtx, appCtx);
+            }
+        }
+
+        public override void BindComponents()
+        {
+            if (ComponentArray == null) throw new InvalidOperationException(
+                "(missing) components storage uninitialized.");
+
+            for (int i = 0; i < ComponentArray.Length; i++)
+            {
+                var component = ComponentArray[i];
+                if (component == null) continue;
+                component.BindComponents();
             }
         }
 

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using TSLib.Utility.Patterns.Scene.Contexts;
 using UnityEngine;
 
@@ -7,12 +8,14 @@ namespace TSLib.Utility.Management.Component.Capabilities
     {
         protected SceneCtx SceneCtx;
         protected AppCtx AppCtx;
+
         public virtual void Initialize() { }
-        public virtual void Inject(SceneCtx sceneCtx, AppCtx appCtx)
+        public virtual void BindContext(SceneCtx sceneCtx, AppCtx appCtx)
         {
             SceneCtx = sceneCtx;
             AppCtx = appCtx;
         }
+        public virtual void BindComponents() { }
         public virtual void Configure() { }
         public virtual void Activate() { }
         public virtual void Deactivate() { }

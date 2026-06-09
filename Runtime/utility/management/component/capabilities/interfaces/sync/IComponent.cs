@@ -1,5 +1,5 @@
 namespace TSLib.Utility.Management.Component.Capabilities
 {
-    public interface IComponent : IInitializable, IConfigurable, IActivatable, IInjectable { }
+    public interface IComponent : IInitializable, IConfigurable, IActivatable, IBindable { }
 }
 
