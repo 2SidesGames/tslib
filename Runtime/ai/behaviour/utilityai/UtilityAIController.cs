@@ -10,7 +10,6 @@ using UnityEngine;
 public class UtilityAIController : TS_Controller
 {
     [SerializeField] private TS_UtilityAI[] standardActions;
-    [SerializeField] private float switchThreshold; // hysteresis avoidance
     [SerializeField] private int bufferSize = 3; // number of bests to pick
     [SerializeField] private int maxBuckets = 10;
 
@@ -41,7 +40,6 @@ public class UtilityAIController : TS_Controller
         }
 
         bufferSize = Mathf.Max(1, bufferSize);
-        switchThreshold = Mathf.Max(0f, switchThreshold);
         maxBuckets = Mathf.Max(1, maxBuckets);
 
         utilities = (TS_UtilityAI[])ComponentArray;
