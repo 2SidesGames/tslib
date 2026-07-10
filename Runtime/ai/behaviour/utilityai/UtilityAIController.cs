@@ -158,7 +158,7 @@ public class UtilityAIController : TS_Controller
         {
             if (!utility.IsChoosable()) continue;
 
-            int score = utility.CurrentScore;
+            float score = Mathf.Clamp01(utility.CurrentScore);
 
             for (int i = 0; i < bufferSize; i++)
             {

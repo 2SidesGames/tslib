@@ -15,7 +15,7 @@ public abstract class TS_UtilityAI : TS_Component
     [SerializeField] private VoidChannel_So onEnded;
 
     public bool IsActive { get; protected set; }
-    public int CurrentScore { get; protected set; }
+    public float CurrentScore { get; protected set; }
     protected float LastActionTime;
 
     public virtual void UpdateScore()
