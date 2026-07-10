@@ -17,7 +17,7 @@ namespace TSLib.Utility.Patterns.Singleton
 
                 if (instance != null) return instance;
 
-                instance = FindFirstObjectByType<T>(FindObjectsInactive.Include);
+                instance = FindAnyObjectByType<T>(FindObjectsInactive.Include);
 
                 return instance;
             }
