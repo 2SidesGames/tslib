@@ -61,8 +61,8 @@ public abstract class TS_UtilityAI : TS_Component
 
     public void SetActive(bool active) => IsActive = active;
 
-    protected abstract void ApplyPenalties();
-    protected abstract void ApplyRewards();
+    protected virtual void ApplyPenalties() { }
+    protected virtual void ApplyRewards() { }
     protected abstract UniTask ExecuteAsync(CancellationToken ct);
 
     private async UniTask TriggerChooseNextAction(CancellationToken ct)
