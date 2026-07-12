@@ -80,6 +80,7 @@ public class UtilityAIController : TS_Controller
     public void Stop()
     {
         executionCts?.Cancel();
+        best = null;
     }
 
     public void ChooseNextAction()
