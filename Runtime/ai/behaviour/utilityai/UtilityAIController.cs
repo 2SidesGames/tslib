@@ -15,6 +15,7 @@ public class UtilityAIController : TS_Controller
 
     [Header("Subscription events")]
     [SerializeField] private VoidChannel_So[] chooseNextActionEvents;
+    [SerializeField] private VoidChannel_So[] stopEvents;
 
     private TS_UtilityAI best;
     private TS_UtilityAI[] utilities;
@@ -79,6 +80,17 @@ public class UtilityAIController : TS_Controller
                 onChooseNextAction.Subscribe(ChooseNextAction);
             }
         }
+
+        if (stopEvents != null)
+        {
+            for (int i = 0; i < stopEvents.Length; i++)
+            {
+                var onStop = stopEvents[i];
+                if (onStop == null) continue;
+
+                onStop.Subscribe(Stop);
+            }
+        }
     }
 
     public override void Deactivate()
@@ -91,6 +103,17 @@ public class UtilityAIController : TS_Controller
                 if (onChooseNextAction == null) continue;
 
                 onChooseNextAction.Unsubscribe(ChooseNextAction);
+            }
+        }
+
+        if (stopEvents != null)
+        {
+            for (int i = 0; i < stopEvents.Length; i++)
+            {
+                var onStop = stopEvents[i];
+                if (onStop == null) continue;
+
+                onStop.Unsubscribe(Stop);
             }
         }
     }
