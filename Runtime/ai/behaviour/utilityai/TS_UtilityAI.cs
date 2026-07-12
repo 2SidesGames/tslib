@@ -18,6 +18,8 @@ public abstract class TS_UtilityAI : TS_Component
     public float CurrentScore { get; protected set; }
     protected float LastActionTime;
 
+    public virtual void UpdateActiveCondition() => IsActive = true;
+
     public virtual void UpdateScore()
     {
         ApplyRewards();
