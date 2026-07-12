@@ -14,7 +14,7 @@ public class UtilityAIController : TS_Controller
     [SerializeField] private int maxBuckets = 10;
 
     [Header("Subscription events")]
-    [SerializeField] private VoidChannel_So onChooseNextAction;
+    [SerializeField] private VoidChannel_So[] chooseNextActionEvents;
 
     private TS_UtilityAI best;
     private TS_UtilityAI[] utilities;
@@ -69,12 +69,30 @@ public class UtilityAIController : TS_Controller
 
     public override void Activate()
     {
-        onChooseNextAction.Subscribe(ChooseNextAction);
+        if (chooseNextActionEvents != null)
+        {
+            for (int i = 0; i < chooseNextActionEvents.Length; i++)
+            {
+                var onChooseNextAction = chooseNextActionEvents[i];
+                if (onChooseNextAction == null) continue;
+
+                onChooseNextAction.Subscribe(ChooseNextAction);
+            }
+        }
     }
 
     public override void Deactivate()
     {
-        onChooseNextAction.Unsubscribe(ChooseNextAction);
+        if (chooseNextActionEvents != null)
+        {
+            for (int i = 0; i < chooseNextActionEvents.Length; i++)
+            {
+                var onChooseNextAction = chooseNextActionEvents[i];
+                if (onChooseNextAction == null) continue;
+
+                onChooseNextAction.Unsubscribe(ChooseNextAction);
+            }
+        }
     }
 
     public void Stop()
