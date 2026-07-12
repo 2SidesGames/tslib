@@ -93,7 +93,7 @@ public class UtilityAIController : TS_Controller
 
         isExecuting = true;
 
-        executionCts = CancellationTokenSource.CreateLinkedTokenSource(destroyCancellationToken);
+        var cts = CancellationTokenSource.CreateLinkedTokenSource(destroyCancellationToken);
 
         try
         {
@@ -101,6 +101,7 @@ public class UtilityAIController : TS_Controller
 
             if (selected == null)
             {
+                // continues the current loop action
                 if (best != null && best.Data.IsLoop) return;
 
                 // choosing a random default action
@@ -109,8 +110,20 @@ public class UtilityAIController : TS_Controller
             }
             else
             {
+                // cancel cts for loop action checker
+                if (best.Data.IsLoop)
+                {
+                    executionCts?.Cancel();
+                    executionCts?.Dispose();
+                    executionCts = null;
+                }
+
+                // changes action
                 best = selected;
             }
+
+            // saving new cts
+            executionCts = cts;
 
             await best.ExecuteActionAsync(executionCts.Token);
         }
@@ -165,7 +178,6 @@ public class UtilityAIController : TS_Controller
                 // dismiss
                 if (currentTop != null && score <= currentTop.CurrentScore) continue;
 
-                // replacing
                 // repositioning tops
                 for (int j = bufferSize - 1; j > i; j--)
                 {
