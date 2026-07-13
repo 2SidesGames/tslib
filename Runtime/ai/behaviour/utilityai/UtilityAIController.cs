@@ -91,6 +91,8 @@ public class UtilityAIController : TS_Controller
                 onStop.Subscribe(Stop);
             }
         }
+
+        base.Activate();
     }
 
     public override void Deactivate()
@@ -116,6 +118,8 @@ public class UtilityAIController : TS_Controller
                 onStop.Unsubscribe(Stop);
             }
         }
+
+        base.Deactivate();
     }
 
     public void Stop()
