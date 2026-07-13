@@ -164,7 +164,7 @@ public class UtilityAIController : TS_Controller
             else
             {
                 // cancel cts for loop action checker
-                if (best.Data.IsLoop)
+                if (best != null && best.Data.IsLoop)
                 {
                     executionCts?.Cancel();
                     executionCts?.Dispose();
