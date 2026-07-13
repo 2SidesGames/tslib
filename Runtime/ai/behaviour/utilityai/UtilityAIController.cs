@@ -44,6 +44,7 @@ public class UtilityAIController : TS_Controller
         bufferSize = Mathf.Max(1, bufferSize);
         maxBuckets = Mathf.Max(1, maxBuckets);
 
+        utilities = new TS_UtilityAI[ComponentArray.Length];
 
         for (int i = 0; i < ComponentArray.Length; i++)
         {
