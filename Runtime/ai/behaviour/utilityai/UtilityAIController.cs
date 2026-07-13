@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using TSLib.Utility.Management.Component.Capabilities;
@@ -43,7 +44,12 @@ public class UtilityAIController : TS_Controller
         bufferSize = Mathf.Max(1, bufferSize);
         maxBuckets = Mathf.Max(1, maxBuckets);
 
-        utilities = (TS_UtilityAI[])ComponentArray;
+
+        for (int i = 0; i < ComponentArray.Length; i++)
+        {
+            utilities[i] = (TS_UtilityAI)ComponentArray[i];
+        }
+
         bucketDict = new Dictionary<int, List<TS_UtilityAI>>(maxBuckets);
         topBuffer = new TS_UtilityAI[bufferSize];
 
