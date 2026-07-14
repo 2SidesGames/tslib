@@ -195,10 +195,6 @@ public class UtilityAIController : TS_Controller
             foreach (var utility in bucket)
             {
                 utility.UpdateActiveCondition();
-
-                // saving the score update because it is not choosable
-                if (!utility.IsActive) continue;
-
                 utility.UpdateScore();
             }
 

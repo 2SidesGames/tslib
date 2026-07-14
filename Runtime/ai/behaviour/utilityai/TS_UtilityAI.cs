@@ -22,6 +22,8 @@ public abstract class TS_UtilityAI : TS_Component
 
     public virtual void UpdateScore()
     {
+        if (!IsActive) return;
+
         ApplyRewards();
         ApplyPenalties();
     }
