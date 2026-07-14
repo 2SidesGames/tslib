@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using TSLib.Utility.Management.Component.Capabilities;
@@ -11,8 +10,7 @@ using UnityEngine;
 public class UtilityAIController : TS_Controller
 {
     [SerializeField] private TS_UtilityAI[] standardActions;
-    [SerializeField] private int bufferSize = 3; // number of bests to pick
-    [SerializeField] private int maxBuckets = 10;
+    [SerializeField] private UtilityAIControllerData_So data;
 
     [Header("Subscription events")]
     [SerializeField] private VoidChannel_So[] chooseNextActionEvents;
@@ -41,9 +39,6 @@ public class UtilityAIController : TS_Controller
             }
         }
 
-        bufferSize = Mathf.Max(1, bufferSize);
-        maxBuckets = Mathf.Max(1, maxBuckets);
-
         utilities = new TS_UtilityAI[ComponentArray.Length];
 
         for (int i = 0; i < ComponentArray.Length; i++)
@@ -51,8 +46,8 @@ public class UtilityAIController : TS_Controller
             utilities[i] = (TS_UtilityAI)ComponentArray[i];
         }
 
-        bucketDict = new Dictionary<int, List<TS_UtilityAI>>(maxBuckets);
-        topBuffer = new TS_UtilityAI[bufferSize];
+        bucketDict = new Dictionary<int, List<TS_UtilityAI>>(data.MaxBuckets);
+        topBuffer = new TS_UtilityAI[data.BufferSize];
 
         for (int i = 0; i < utilities.Length; i++)
         {
@@ -193,7 +188,7 @@ public class UtilityAIController : TS_Controller
     private TS_UtilityAI SelectNextUtility()
     {
         // 0 priority is the highest one
-        for (int p = 0; p < maxBuckets; p++)
+        for (int p = 0; p < data.MaxBuckets; p++)
         {
             if (!bucketDict.TryGetValue(p, out List<TS_UtilityAI> bucket)) continue;
 
@@ -219,7 +214,8 @@ public class UtilityAIController : TS_Controller
 
     private int InsertTopUtilities(List<TS_UtilityAI> bucket)
     {
-        Array.Clear(topBuffer, 0, bufferSize);
+        int size = data.BufferSize;
+        Array.Clear(topBuffer, 0, size);
 
         int count = 0; // how many utilities added to the buffer
 
@@ -229,23 +225,26 @@ public class UtilityAIController : TS_Controller
 
             float score = Mathf.Clamp01(utility.CurrentScore);
 
-            for (int i = 0; i < bufferSize; i++)
+            for (int i = 0; i < size; i++)
             {
                 var currentTop = topBuffer[i];
 
-                // dismiss
-                if (currentTop != null && score <= currentTop.CurrentScore) continue;
-
-                // repositioning tops
-                for (int j = bufferSize - 1; j > i; j--)
+                if (currentTop != null)
                 {
-                    if (currentTop == null) break; // just insert it
-                    topBuffer[j] = topBuffer[j - 1];
+                    // dismiss
+                    if (score <= data.MinScoreRequired) continue;
+                    if (score <= currentTop.CurrentScore) continue;
+
+                    // repositioning tops
+                    for (int j = size - 1; j > i; j--)
+                    {
+                        topBuffer[j] = topBuffer[j - 1];
+                    }
                 }
 
                 topBuffer[i] = utility;
 
-                if (count < bufferSize) count++;
+                if (count < size) count++;
 
                 break; // next utility
             }
