@@ -225,6 +225,9 @@ public class UtilityAIController : TS_Controller
 
             float score = Mathf.Clamp01(utility.CurrentScore);
 
+            // next utility
+            if (score <= data.MinScoreRequired) continue;
+
             for (int i = 0; i < size; i++)
             {
                 var currentTop = topBuffer[i];
@@ -232,7 +235,6 @@ public class UtilityAIController : TS_Controller
                 if (currentTop != null)
                 {
                     // dismiss
-                    if (score <= data.MinScoreRequired) continue;
                     if (score <= currentTop.CurrentScore) continue;
 
                     // repositioning tops
