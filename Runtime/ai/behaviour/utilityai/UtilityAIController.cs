@@ -158,9 +158,13 @@ public class UtilityAIController : TS_Controller
             }
             else
             {
-                // cancel cts for loop action checker
                 if (best != null && best.Data.IsLoop)
                 {
+                    // continues the current loop action
+                    if (ReferenceEquals(selected, best))
+                        return;
+
+                    // cancels cts for loop action checker
                     executionCts?.Cancel();
                     executionCts?.Dispose();
                     executionCts = null;
