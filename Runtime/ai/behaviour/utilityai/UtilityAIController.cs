@@ -175,7 +175,7 @@ public class UtilityAIController : TS_Controller
 
             await best.ExecuteActionAsync(executionCts.Token);
         }
-        catch (OperationCanceledException) when (executionCts.IsCancellationRequested) { }
+        catch (OperationCanceledException) when (cts.IsCancellationRequested) { }
         catch (Exception exception) { Debug.LogException(exception, this); }
         finally
         {
