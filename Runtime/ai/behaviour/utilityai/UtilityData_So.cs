@@ -13,7 +13,7 @@ public class UtilityData_So : ScriptableObject
     Tooltip("Delay in milliseconds for requesting choosing next action in loop actions.")]
     public int ChooseNextActionDelay { get; private set; } // TODO: usar como tiempo de release
 
-    [field: SerializeField, Range(0, 10, order = 1), Tooltip("Lower value, higher priority.")]
+    [field: SerializeField, Min(0), Tooltip("Lower value, higher priority.")]
     public int Priority { get; private set; }
 
     [field: SerializeField, Min(0), Tooltip("Cooldown before the utility action can be executed again, in milliseconds. " +
