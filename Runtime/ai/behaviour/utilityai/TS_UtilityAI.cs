@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using TSLib.Utility.Debug.Logging;
 using TSLib.Utility.Management.Component.Capabilities;
 using TSLib.Utility.Patterns.EventChannels.Primitive;
 using UnityEngine;
@@ -37,15 +38,10 @@ public abstract class TS_UtilityAI : TS_Component
             if (Data.IsLoop)
             {
                 TriggerChooseNextAction(ct).Forget();
-                ExecuteAsync(ct).Forget();
             }
-            else
-            {
-                await ExecuteAsync(ct);
-            }
+
+            await ExecuteAsync(ct);
         }
-        catch (OperationCanceledException) when (ct.IsCancellationRequested) { }
-        catch (Exception ex) { Debug.LogException(ex); }
         finally
         {
             LastActionTime = Time.time * 1000;
@@ -73,10 +69,15 @@ public abstract class TS_UtilityAI : TS_Component
     {
         var delay = Mathf.Max(Data.ChooseNextActionDelay, Data.Cooldown);
 
-        while (!ct.IsCancellationRequested)
+        try
         {
-            await UniTask.Delay(delay, cancellationToken: ct);
-            onChooseNextAction.TriggerEvent();
+            while (!ct.IsCancellationRequested)
+            {
+                await UniTask.Delay(delay, cancellationToken: ct);
+                onChooseNextAction.TriggerEvent();
+            }
         }
+        catch (OperationCanceledException) { }
+        catch (Exception ex) { TSLogger.LogException(ex); }
     }
 }

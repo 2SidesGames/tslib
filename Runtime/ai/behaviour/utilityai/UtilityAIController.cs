@@ -16,7 +16,7 @@ public class UtilityAIController : TS_Controller
     [SerializeField] private VoidChannel_So[] chooseNextActionEvents;
     [SerializeField] private VoidChannel_So[] stopEvents;
 
-    private TS_UtilityAI best;
+    private TS_UtilityAI currentAction;
     private TS_UtilityAI[] utilities;
     private TS_UtilityAI[] topBuffer;
     private Dictionary<int, List<TS_UtilityAI>> bucketDict;
@@ -127,7 +127,7 @@ public class UtilityAIController : TS_Controller
     public void Stop()
     {
         executionCts?.Cancel();
-        best = null;
+        currentAction = null;
     }
 
     public void ChooseNextAction()
@@ -139,52 +139,53 @@ public class UtilityAIController : TS_Controller
     {
         if (isExecuting) return;
 
+        var selected = SelectNextUtility();
+
+        if (selected == null)
+        {
+            // continues the current loop action
+            if (currentAction != null && currentAction.Data.IsLoop) return;
+
+            // choosing a random default action
+            int randomIndex = UnityEngine.Random.Range(0, standardActions.Length);
+            currentAction = standardActions[randomIndex];
+        }
+        else
+        {
+            if (currentAction != null && currentAction.Data.IsLoop)
+            {
+                // continues the current loop action
+                if (ReferenceEquals(selected, currentAction)) return;
+
+                // cancels and remove previous cts of loop action checker
+                executionCts?.Cancel();
+                executionCts?.Dispose();
+                executionCts = null;
+            }
+
+            // changes action
+            currentAction = selected;
+        }
+
         isExecuting = true;
 
+        // new cts
         var cts = CancellationTokenSource.CreateLinkedTokenSource(destroyCancellationToken);
+        executionCts = cts;
 
         try
         {
-            var selected = SelectNextUtility();
-
-            if (selected == null)
-            {
-                // continues the current loop action
-                if (best != null && best.Data.IsLoop) return;
-
-                // choosing a random default action
-                int randomIndex = UnityEngine.Random.Range(0, standardActions.Length);
-                best = standardActions[randomIndex];
-            }
-            else
-            {
-                if (best != null && best.Data.IsLoop)
-                {
-                    // continues the current loop action
-                    if (ReferenceEquals(selected, best))
-                        return;
-
-                    // cancels cts for loop action checker
-                    executionCts?.Cancel();
-                    executionCts?.Dispose();
-                    executionCts = null;
-                }
-
-                // changes action
-                best = selected;
-            }
-
-            // saving new cts
-            executionCts = cts;
-
-            await best.ExecuteActionAsync(executionCts.Token);
+            await currentAction.ExecuteActionAsync(cts.Token);
         }
-        catch (OperationCanceledException) when (cts.IsCancellationRequested) { }
-        catch (Exception exception) { Debug.LogException(exception, this); }
         finally
         {
-            executionCts?.Dispose();
-            executionCts = null;
+            if (!currentAction.Data.IsLoop || cts.IsCancellationRequested)
+            {
+                cts.Dispose();
+
+                if (ReferenceEquals(executionCts, cts)) { executionCts = null; }
+            }
+
             isExecuting = false;
         }
     }
@@ -219,11 +220,11 @@ public class UtilityAIController : TS_Controller
 
         int count = 0; // how many utilities added to the buffer
 
-        foreach (var utility in bucket)
+        foreach (var candidate in bucket)
         {
-            if (!utility.IsChoosable()) continue;
+            if (!candidate.IsChoosable()) continue;
 
-            float score = Mathf.Clamp01(utility.CurrentScore);
+            float score = Mathf.Clamp01(candidate.CurrentScore);
 
             // next utility
             if (score <= data.MinScoreRequired) continue;
@@ -244,7 +245,7 @@ public class UtilityAIController : TS_Controller
                     }
                 }
 
-                topBuffer[i] = utility;
+                topBuffer[i] = candidate;
 
                 if (count < size) count++;
 
