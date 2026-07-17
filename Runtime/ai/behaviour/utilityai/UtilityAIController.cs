@@ -186,6 +186,8 @@ public class UtilityAIController : TS_Controller
         }
         finally
         {
+            isExecuting = false;
+
             if (!currentAction.Data.IsLoop || cts.IsCancellationRequested)
             {
                 cts.Dispose();
@@ -194,8 +196,6 @@ public class UtilityAIController : TS_Controller
 
                 ChooseNextAction(); // starts again after finite action
             }
-
-            isExecuting = false;
 
             // notifies ending
             TriggerEvents(actionEndedEvents);
