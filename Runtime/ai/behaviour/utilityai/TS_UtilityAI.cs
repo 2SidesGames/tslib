@@ -12,8 +12,6 @@ public abstract class TS_UtilityAI : TS_Component
 
     [Header("Trigger Events")]
     [SerializeField] private VoidChannel_So onChooseNextAction;
-    [SerializeField] private VoidChannel_So onStarted;
-    [SerializeField] private VoidChannel_So onEnded;
 
     public bool IsActive { get; protected set; }
     public float CurrentScore { get; protected set; }
@@ -31,22 +29,15 @@ public abstract class TS_UtilityAI : TS_Component
 
     public virtual async UniTask ExecuteActionAsync(CancellationToken ct)
     {
-        if (onStarted != null) onStarted.TriggerEvent();
-
         try
         {
-            if (Data.IsLoop)
-            {
-                TriggerChooseNextAction(ct).Forget();
-            }
+            if (Data.IsLoop) TriggerChooseNextAction(ct).Forget();
 
             await ExecuteAsync(ct);
         }
         finally
         {
             LastActionTime = Time.time * 1000;
-            if (onEnded != null) onEnded.TriggerEvent();
-            if (!Data.IsLoop) onChooseNextAction.TriggerEvent();
         }
     }
 

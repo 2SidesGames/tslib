@@ -12,6 +12,10 @@ public class UtilityAIController : TS_Controller
     [SerializeField] private TS_UtilityAI[] standardActions;
     [SerializeField] private UtilityAIControllerData_So data;
 
+    [Header("Trigger events")]
+    [SerializeField] private VoidChannel_So[] actionStartedEvents;
+    [SerializeField] private VoidChannel_So[] actionEndedEvents;
+
     [Header("Subscription events")]
     [SerializeField] private VoidChannel_So[] chooseNextActionEvents;
     [SerializeField] private VoidChannel_So[] stopEvents;
@@ -173,6 +177,9 @@ public class UtilityAIController : TS_Controller
         var cts = CancellationTokenSource.CreateLinkedTokenSource(destroyCancellationToken);
         executionCts = cts;
 
+        // notifies start
+        TriggerEvents(actionStartedEvents);
+
         try
         {
             await currentAction.ExecuteActionAsync(cts.Token);
@@ -184,9 +191,14 @@ public class UtilityAIController : TS_Controller
                 cts.Dispose();
 
                 if (ReferenceEquals(executionCts, cts)) { executionCts = null; }
+
+                ChooseNextAction(); // starts again after finite action
             }
 
             isExecuting = false;
+
+            // notifies ending
+            TriggerEvents(actionEndedEvents);
         }
     }
 
@@ -253,5 +265,18 @@ public class UtilityAIController : TS_Controller
             }
         }
         return count;
+    }
+
+    private void TriggerEvents(VoidChannel_So[] events)
+    {
+        if (events == null) return;
+
+        for (int i = 0; i < events.Length; i++)
+        {
+            var e = events[i];
+            if (e == null) continue;
+
+            e.TriggerEvent();
+        }
     }
 }
