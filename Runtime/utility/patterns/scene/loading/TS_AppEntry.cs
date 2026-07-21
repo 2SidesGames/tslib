@@ -13,7 +13,7 @@ namespace TSLib.Utility.Patterns.Scene.Loading
 
         private async void Start()
         {
-            var ct = this.GetCancellationTokenOnDestroy();
+            var ct = destroyCancellationToken;
 
             try
             {
