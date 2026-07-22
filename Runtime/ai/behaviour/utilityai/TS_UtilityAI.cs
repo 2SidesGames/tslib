@@ -6,69 +6,72 @@ using TSLib.Utility.Management.Component.Capabilities;
 using TSLib.Utility.Patterns.EventChannels.Primitive;
 using UnityEngine;
 
-public abstract class TS_UtilityAI : TS_Component
+namespace TSLib.AI.Behaviour.UtilityAI
 {
-    [field: SerializeField] public UtilityData_So Data { get; private set; }
-
-    [Header("Trigger Events")]
-    [SerializeField] private VoidChannel_So onChooseNextAction;
-
-    public bool IsActive { get; protected set; }
-    public float CurrentScore { get; protected set; }
-    protected float LastActionTime;
-
-    public virtual void UpdateActiveCondition() => IsActive = true;
-
-    public virtual void UpdateScore()
+    public abstract class TS_UtilityAI : TS_Component
     {
-        if (!IsActive) return;
+        [field: SerializeField] public UtilityData_So Data { get; private set; }
 
-        ApplyRewards();
-        ApplyPenalties();
-    }
+        [Header("Trigger Events")]
+        [SerializeField] private VoidChannel_So onChooseNextAction;
 
-    public virtual async UniTask ExecuteActionAsync(CancellationToken ct)
-    {
-        try
+        public bool IsActive { get; protected set; }
+        public float CurrentScore { get; protected set; }
+        protected float LastActionTime;
+
+        public virtual void UpdateActiveCondition() => IsActive = true;
+
+        public virtual void UpdateScore()
         {
-            if (Data.IsLoop) TriggerChooseNextAction(ct).Forget();
+            if (!IsActive) return;
 
-            await ExecuteAsync(ct);
+            ApplyRewards();
+            ApplyPenalties();
         }
-        finally
+
+        public virtual async UniTask ExecuteActionAsync(CancellationToken ct)
         {
-            LastActionTime = Time.time * 1000;
-        }
-    }
-
-    public bool IsChoosable()
-    {
-        if (!IsActive) return false;
-
-        // is cooldown completed?
-        var currentTime = Time.time * 1000; // in ms
-        return currentTime - LastActionTime > Data.Cooldown;
-    }
-
-    public void SetActive(bool active) => IsActive = active;
-
-    protected virtual void ApplyPenalties() { }
-    protected virtual void ApplyRewards() { }
-    protected abstract UniTask ExecuteAsync(CancellationToken ct);
-
-    private async UniTask TriggerChooseNextAction(CancellationToken ct)
-    {
-        var delay = Mathf.Max(Data.ChooseNextActionDelay, Data.Cooldown);
-
-        try
-        {
-            while (!ct.IsCancellationRequested)
+            try
             {
-                await UniTask.Delay(delay, cancellationToken: ct);
-                onChooseNextAction.TriggerEvent();
+                if (Data.IsLoop) TriggerChooseNextAction(ct).Forget();
+
+                await ExecuteAsync(ct);
+            }
+            finally
+            {
+                LastActionTime = Time.time * 1000;
             }
         }
-        catch (OperationCanceledException) { }
-        catch (Exception ex) { TSLogger.LogException(ex); }
+
+        public bool IsChoosable()
+        {
+            if (!IsActive) return false;
+
+            // is cooldown completed?
+            var currentTime = Time.time * 1000; // in ms
+            return currentTime - LastActionTime > Data.Cooldown;
+        }
+
+        public void SetActive(bool active) => IsActive = active;
+
+        protected virtual void ApplyPenalties() { }
+        protected virtual void ApplyRewards() { }
+        protected abstract UniTask ExecuteAsync(CancellationToken ct);
+
+        private async UniTask TriggerChooseNextAction(CancellationToken ct)
+        {
+            var delay = Mathf.Max(Data.ChooseNextActionDelay, Data.Cooldown);
+
+            try
+            {
+                while (!ct.IsCancellationRequested)
+                {
+                    await UniTask.Delay(delay, cancellationToken: ct);
+                    onChooseNextAction.TriggerEvent();
+                }
+            }
+            catch (OperationCanceledException) { }
+            catch (Exception ex) { TSLogger.LogException(ex); }
+        }
     }
 }
