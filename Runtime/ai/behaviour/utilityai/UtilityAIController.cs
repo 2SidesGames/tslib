@@ -133,7 +133,6 @@ namespace TSLib.AI.Behaviour.UtilityAI
         public void Stop()
         {
             executionCts?.Cancel();
-            currentAction = null;
         }
 
         public void ChooseNextAction()
@@ -182,25 +181,38 @@ namespace TSLib.AI.Behaviour.UtilityAI
             // notifies start
             TriggerEvents(actionStartedEvents);
 
+            var executingAction = currentAction;
+            bool wasCancelled = false;
+
             try
             {
                 await currentAction.ExecuteActionAsync(cts.Token);
+            }
+            catch (OperationCanceledException) when (cts.IsCancellationRequested)
+            {
+                wasCancelled = true;
             }
             finally
             {
                 isExecuting = false;
 
-                if (!currentAction.Data.IsLoop || cts.IsCancellationRequested)
+                if (wasCancelled || !executingAction.Data.IsLoop)
                 {
+                    if (ReferenceEquals(executionCts, cts)) executionCts = null;
+
                     cts.Dispose();
 
-                    if (ReferenceEquals(executionCts, cts)) { executionCts = null; }
+                    TriggerEvents(actionEndedEvents);
 
-                    ChooseNextAction(); // starts again after finite action
+                    if (!wasCancelled)
+                    {
+                        ChooseNextAction();
+                    }
+                    else
+                    {
+                        currentAction = null;
+                    }
                 }
-
-                // notifies ending
-                TriggerEvents(actionEndedEvents);
             }
         }
 
