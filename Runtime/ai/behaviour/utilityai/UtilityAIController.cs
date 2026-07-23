@@ -133,6 +133,15 @@ namespace TSLib.AI.Behaviour.UtilityAI
         public void Stop()
         {
             executionCts?.Cancel();
+            isExecuting = false;
+
+            // cleaning
+            if (currentAction != null && currentAction.Data.IsLoop)
+            {
+                executionCts?.Dispose();
+                executionCts = null;
+                currentAction = null;
+            }
         }
 
         public void ChooseNextAction()
@@ -192,25 +201,22 @@ namespace TSLib.AI.Behaviour.UtilityAI
             }
             finally
             {
-                isExecuting = false;
-
-                if (wasCancelled || !executingAction.Data.IsLoop)
+                if (wasCancelled)
                 {
-                    if (ReferenceEquals(executionCts, cts)) executionCts = null;
-
+                    if (ReferenceEquals(executionCts, cts)) { executionCts = null; }
                     cts.Dispose();
-
-                    TriggerEvents(actionEndedEvents);
-
-                    if (!wasCancelled)
-                    {
-                        ChooseNextAction();
-                    }
-                    else
-                    {
-                        currentAction = null;
-                    }
+                    currentAction = null;
                 }
+                else if (!executingAction.Data.IsLoop)
+                {
+                    if (ReferenceEquals(executionCts, cts)) { executionCts = null; }
+                    cts.Dispose();
+                    TriggerEvents(actionEndedEvents);
+                    isExecuting = false; // needed for choosing next action
+                    ChooseNextAction();
+                }
+
+                isExecuting = false;
             }
         }
 

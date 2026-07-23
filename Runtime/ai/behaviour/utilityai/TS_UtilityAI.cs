@@ -66,7 +66,7 @@ namespace TSLib.AI.Behaviour.UtilityAI
             {
                 bool wasCancelled = await UniTask.Delay(delay, cancellationToken: ct).SuppressCancellationThrow();
 
-                if (wasCancelled) return;
+                if (wasCancelled || ct.IsCancellationRequested) return;
 
                 onChooseNextAction.TriggerEvent();
             }
