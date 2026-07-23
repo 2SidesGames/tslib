@@ -188,7 +188,7 @@ namespace TSLib.AI.Behaviour.UtilityAI
             {
                 await currentAction.ExecuteActionAsync(cts.Token);
             }
-            catch (OperationCanceledException) when (cts.IsCancellationRequested)
+            catch (OperationCanceledException)
             {
                 wasCancelled = true;
             }
