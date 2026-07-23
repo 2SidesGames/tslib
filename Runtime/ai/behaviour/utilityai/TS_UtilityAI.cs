@@ -31,10 +31,10 @@ namespace TSLib.AI.Behaviour.UtilityAI
 
         public virtual async UniTask ExecuteActionAsync(CancellationToken ct)
         {
+            if (Data.IsLoop) TriggerChooseNextAction(ct).Forget();
+
             try
             {
-                if (Data.IsLoop) TriggerChooseNextAction(ct).Forget();
-
                 await ExecuteAsync(ct);
             }
             finally
@@ -62,16 +62,14 @@ namespace TSLib.AI.Behaviour.UtilityAI
         {
             var delay = Mathf.Max(Data.ChooseNextActionDelay, Data.Cooldown);
 
-            try
+            while (true)
             {
-                while (!ct.IsCancellationRequested)
-                {
-                    await UniTask.Delay(delay, cancellationToken: ct);
-                    onChooseNextAction.TriggerEvent();
-                }
+                bool wasCancelled = await UniTask.Delay(delay, cancellationToken: ct).SuppressCancellationThrow();
+
+                if (wasCancelled) return;
+
+                onChooseNextAction.TriggerEvent();
             }
-            catch (OperationCanceledException) { }
-            catch (Exception ex) { TSLogger.LogException(ex); }
         }
     }
 }
