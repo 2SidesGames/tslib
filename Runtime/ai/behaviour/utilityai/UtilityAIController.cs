@@ -147,13 +147,14 @@ namespace TSLib.AI.Behaviour.UtilityAI
         {
             if (isExecuting) return;
 
-            isExecuting = true;
-
             if (!TrySelectNextAction()) return;
 
             // new cts
             var cts = CancellationTokenSource.CreateLinkedTokenSource(destroyCancellationToken);
             executionCts = cts;
+
+            isExecuting = true;
+
             ExecuteActionAsync(cts).Forget();
         }
 
