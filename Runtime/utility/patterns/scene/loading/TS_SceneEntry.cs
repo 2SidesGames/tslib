@@ -18,34 +18,45 @@ namespace TSLib.Utility.Patterns.Scene.Loading
 
             SceneCtx.SetActive(false);
 
-            // optional
-            await PreconfigureSceneAsync(ct);
+            await DeactivateAsync(ct);
+
+            await PreconfigureSceneAsync(ct); // optional
 
             await InstantiateAsync(ct);
             await InitializeAsync(ct);
-            await RegisterAsync(SceneCtx, AppCtx, ct);
+            await BindContextAsync(ct);
+            await RegisterAsync(ct);
 
             SceneCtx.SetActive(true);
 
-            await InjectAsync(SceneCtx, AppCtx, ct);
+            await BindComponentsAsync(ct);
             await ConfigureAsync(ct);
 
-            // optional
-            await ExecuteCustomOperationsAsync(ct);
-            await LoadSceneAdditiveAsync(ct);
-            await UnLoadSceneAdditiveAsync(ct);
+            await PreActivationAsync(ct); // optional
+
+            await ActivateAsync(ct);
+
+            await PostActivationAsync(ct); // optional
+
+            await LoadSceneAdditiveAsync(ct); // optional
+            await UnLoadSceneAdditiveAsync(ct); // optional
         }
+
+        protected abstract UniTask DeactivateAsync(CancellationToken ct);
 
         protected virtual UniTask PreconfigureSceneAsync(CancellationToken ct) => UniTask.CompletedTask;
 
         protected abstract UniTask InstantiateAsync(CancellationToken ct);
         protected abstract UniTask InitializeAsync(CancellationToken ct);
-        protected abstract UniTask RegisterAsync(SceneCtx sceneCtx, AppCtx appCtx, CancellationToken ct);
-        protected abstract UniTask InjectAsync(SceneCtx sceneCtx, AppCtx appCtx, CancellationToken ct);
+        protected abstract UniTask BindContextAsync(CancellationToken ct);
+        protected abstract UniTask RegisterAsync(CancellationToken ct);
+        protected abstract UniTask BindComponentsAsync(CancellationToken ct);
         protected abstract UniTask ConfigureAsync(CancellationToken ct);
+        protected abstract UniTask ActivateAsync(CancellationToken ct);
 
         // optional
-        protected virtual UniTask ExecuteCustomOperationsAsync(CancellationToken ct) => UniTask.CompletedTask;
+        protected virtual UniTask PreActivationAsync(CancellationToken ct) => UniTask.CompletedTask;
+        protected virtual UniTask PostActivationAsync(CancellationToken ct) => UniTask.CompletedTask;
         protected virtual UniTask LoadSceneAdditiveAsync(CancellationToken ct) => UniTask.CompletedTask;
         protected virtual UniTask UnLoadSceneAdditiveAsync(CancellationToken ct) => UniTask.CompletedTask;
     }

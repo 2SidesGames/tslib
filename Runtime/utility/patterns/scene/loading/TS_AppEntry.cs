@@ -9,22 +9,41 @@ namespace TSLib.Utility.Patterns.Scene.Loading
 {
     public abstract class TS_AppEntry : MonoBehaviour
     {
-        public AppCtx AppCtx { get; protected set; }
+        protected AppCtx AppCtx;
 
         private async void Start()
         {
-            var ct = this.GetCancellationTokenOnDestroy();
+            var ct = destroyCancellationToken;
 
             try
             {
-                await ConfigureAppAsync(ct);
-                AppCtx = await CreateContextAsync(ct);
-                await RegisterUtilitiesCtxAsync(ct);
-                await RegisterSharedCtxAsync(ct);
-                await LoadFirstSceneAdditiveAsync(ct);
+                ConfigureApp();
+                CreateAppContext();
 
-                if (ct.IsCancellationRequested)
-                    return;
+                AppCtx.GlobalCtx.SetActive(false);
+                AppCtx.UtilityCtx.SetActive(false);
+
+                await DeactivateAsync(ct);
+                await InstantiateAsync(ct);
+                await InitializeAsync(ct);
+                await BindContextAsync(ct);
+                await RegisterAsync(ct);
+
+                AppCtx.GlobalCtx.SetActive(true);
+                AppCtx.UtilityCtx.SetActive(true);
+
+                await BindComponentsAsync(ct);
+                await ConfigureAsync(ct);
+
+                await PreActivationAsync(ct); // optional
+
+                await ActivateAsync(ct);
+
+                await PostActivationAsync(ct); // optional
+
+                await LoadSceneAdditiveAsync(ct);
+
+                if (ct.IsCancellationRequested) return;
 
                 var scene = gameObject.scene;
                 if (!scene.IsValid() || !scene.isLoaded)
@@ -35,7 +54,7 @@ namespace TSLib.Utility.Patterns.Scene.Loading
             }
             catch (OperationCanceledException) when (ct.IsCancellationRequested)
             {
-                OnTokenCanceled(); // could be ignored
+                OnTokenCanceled(); // could be ignored // optional
             }
             catch (Exception ex)
             {
@@ -43,11 +62,31 @@ namespace TSLib.Utility.Patterns.Scene.Loading
             }
         }
 
-        protected abstract UniTask ConfigureAppAsync(CancellationToken ct);
-        protected abstract UniTask<AppCtx> CreateContextAsync(CancellationToken ct);
-        protected virtual UniTask RegisterUtilitiesCtxAsync(CancellationToken ct) => UniTask.CompletedTask;
-        protected virtual UniTask RegisterSharedCtxAsync(CancellationToken ct) => UniTask.CompletedTask;
-        protected abstract UniTask LoadFirstSceneAdditiveAsync(CancellationToken ct);
+        protected abstract void ConfigureApp();
+        protected void CreateAppContext()
+        {
+            AppCtx = new AppCtx
+            {
+                UtilityCtx = new UtilityCtx(),
+                GlobalCtx = new SharedCtx()
+            };
+        }
+
+        protected abstract UniTask DeactivateAsync(CancellationToken ct);
+        protected abstract UniTask InstantiateAsync(CancellationToken ct);
+        protected abstract UniTask InitializeAsync(CancellationToken ct);
+        protected abstract UniTask BindContextAsync(CancellationToken ct);
+        protected abstract UniTask RegisterAsync(CancellationToken ct);
+        protected abstract UniTask BindComponentsAsync(CancellationToken ct);
+        protected abstract UniTask ConfigureAsync(CancellationToken ct);
+
+        protected abstract UniTask ActivateAsync(CancellationToken ct);
+
+        protected abstract UniTask LoadSceneAdditiveAsync(CancellationToken ct);
+
+        // optional
+        protected virtual UniTask PreActivationAsync(CancellationToken ct) => UniTask.CompletedTask;
+        protected virtual UniTask PostActivationAsync(CancellationToken ct) => UniTask.CompletedTask;
         protected virtual void OnTokenCanceled() { }
     }
 }

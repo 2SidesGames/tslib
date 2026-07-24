@@ -1,0 +1,314 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading;
+using Cysharp.Threading.Tasks;
+using TSLib.Utility.Management.Component.Capabilities;
+using TSLib.Utility.Patterns.EventChannels.Primitive;
+using UnityEngine;
+
+namespace TSLib.AI.Behaviour.UtilityAI
+{
+    public class UtilityAIController : TS_Controller
+    {
+        [SerializeField] private TS_UtilityAI[] defaultActions;
+        [SerializeField] private UtilityAIControllerData_So data;
+
+        [Header("Trigger events")]
+        [SerializeField] private VoidChannel_So[] actionStartedEvents;
+        [SerializeField] private VoidChannel_So[] actionEndedEvents;
+
+        [Header("Subscription events")]
+        [SerializeField] private VoidChannel_So[] chooseNextActionEvents;
+        [SerializeField] private VoidChannel_So[] stopEvents;
+
+        private TS_UtilityAI currentAction;
+        private TS_UtilityAI[] utilities;
+        private TS_UtilityAI[] topBuffer;
+        private Dictionary<int, List<TS_UtilityAI>> bucketDict;
+        private bool isExecuting;
+        private CancellationTokenSource executionCts;
+
+        public override void Initialize()
+        {
+            if (defaultActions == null || defaultActions.Length == 0)
+            {
+                throw new NullReferenceException("(missing) At least one default action must be set.");
+            }
+
+            for (int i = 0; i < defaultActions.Length; i++)
+            {
+                var standard = defaultActions[i];
+                if (!standard.Data.IsLoop)
+                {
+                    throw new InvalidDataException("Default Utility AI must be a loop action.");
+                }
+            }
+
+            utilities = new TS_UtilityAI[ComponentArray.Length];
+
+            for (int i = 0; i < ComponentArray.Length; i++)
+            {
+                utilities[i] = (TS_UtilityAI)ComponentArray[i];
+            }
+
+            bucketDict = new Dictionary<int, List<TS_UtilityAI>>(data.MaxBuckets);
+            topBuffer = new TS_UtilityAI[data.BufferSize];
+
+            for (int i = 0; i < utilities.Length; i++)
+            {
+                TS_UtilityAI utility = utilities[i];
+
+                if (utility == null) continue;
+
+                int priority = utility.Data.Priority;
+
+                if (bucketDict.TryGetValue(priority, out List<TS_UtilityAI> bucket))
+                {
+                    bucket.Add(utility);
+                }
+                else
+                {
+                    bucketDict.Add(priority, new List<TS_UtilityAI> { utility });
+                }
+            }
+
+            base.Initialize();
+        }
+
+        public override void Activate()
+        {
+            if (chooseNextActionEvents != null)
+            {
+                for (int i = 0; i < chooseNextActionEvents.Length; i++)
+                {
+                    var onChooseNextAction = chooseNextActionEvents[i];
+                    if (onChooseNextAction == null) continue;
+
+                    onChooseNextAction.Subscribe(ChooseAndExecuteNextAction);
+                }
+            }
+
+            if (stopEvents != null)
+            {
+                for (int i = 0; i < stopEvents.Length; i++)
+                {
+                    var onStop = stopEvents[i];
+                    if (onStop == null) continue;
+
+                    onStop.Subscribe(Stop);
+                }
+            }
+
+            base.Activate();
+        }
+
+        public override void Deactivate()
+        {
+            if (chooseNextActionEvents != null)
+            {
+                for (int i = 0; i < chooseNextActionEvents.Length; i++)
+                {
+                    var onChooseNextAction = chooseNextActionEvents[i];
+                    if (onChooseNextAction == null) continue;
+
+                    onChooseNextAction.Unsubscribe(ChooseAndExecuteNextAction);
+                }
+            }
+
+            if (stopEvents != null)
+            {
+                for (int i = 0; i < stopEvents.Length; i++)
+                {
+                    var onStop = stopEvents[i];
+                    if (onStop == null) continue;
+
+                    onStop.Unsubscribe(Stop);
+                }
+            }
+
+            base.Deactivate();
+        }
+
+        public void Stop()
+        {
+            executionCts?.Cancel();
+
+            // clean up when a loop action is running on background
+            if (currentAction != null && currentAction.Data.IsLoop)
+            {
+                executionCts?.Dispose();
+                executionCts = null;
+                currentAction = null;
+            }
+        }
+
+        public void ChooseAndExecuteNextAction()
+        {
+            if (isExecuting) return;
+
+            if (!TrySelectNextAction()) return;
+
+            // new cts
+            var cts = CancellationTokenSource.CreateLinkedTokenSource(destroyCancellationToken);
+            executionCts = cts;
+
+            isExecuting = true;
+
+            ExecuteActionAsync(cts).Forget();
+        }
+
+        private bool TrySelectNextAction()
+        {
+            var candidate = SelectNextUtility();
+
+            var selected = FilterSelected(candidate);
+
+            // continues current action loop
+            if (selected == null) return false;
+
+            // new action
+            currentAction = selected;
+            return true;
+        }
+
+        private async UniTask ExecuteActionAsync(CancellationTokenSource cts)
+        {
+            var executingAction = currentAction;
+            bool wasCancelled = false;
+
+            // notify start
+            TriggerEvents(actionStartedEvents);
+
+            try
+            {
+                wasCancelled = await executingAction
+                    .ExecuteActionAsync(cts.Token)
+                    .SuppressCancellationThrow();
+            }
+            finally
+            {
+                isExecuting = false;
+
+                if (wasCancelled)
+                {
+                    if (ReferenceEquals(executionCts, cts)) { executionCts = null; }
+                    cts.Dispose();
+                    currentAction = null;
+                }
+                else if (!executingAction.Data.IsLoop)
+                {
+                    if (ReferenceEquals(executionCts, cts)) { executionCts = null; }
+                    cts.Dispose();
+                    TriggerEvents(actionEndedEvents);
+                    ChooseAndExecuteNextAction();
+                }
+            }
+        }
+
+        private TS_UtilityAI FilterSelected(TS_UtilityAI selected)
+        {
+            if (currentAction != null && currentAction.Data.IsLoop)
+            {
+                // continues the current loop action
+                if (selected == null || ReferenceEquals(selected, currentAction))
+                {
+                    return null;
+                }
+
+                // cancels and remove previous cts of loop action checker
+                executionCts?.Cancel();
+                executionCts?.Dispose();
+                executionCts = null;
+            }
+            else
+            {
+                if (selected == null)
+                {
+                    // choosing a random default action
+                    int randomIndex = UnityEngine.Random.Range(0, defaultActions.Length);
+                    selected = defaultActions[randomIndex];
+                }
+            }
+            return selected;
+        }
+
+        private TS_UtilityAI SelectNextUtility()
+        {
+            // 0 priority is the highest one
+            for (int p = 0; p < data.MaxBuckets; p++)
+            {
+                if (!bucketDict.TryGetValue(p, out List<TS_UtilityAI> bucket)) continue;
+
+                foreach (var utility in bucket)
+                {
+                    utility.UpdateActiveCondition();
+                    utility.UpdateScore();
+                }
+
+                int count = InsertTopUtilities(bucket);
+
+                if (count == 0) continue; // next bucket
+
+                int randomIndex = UnityEngine.Random.Range(0, count);
+                return topBuffer[randomIndex];
+            }
+            return null;
+        }
+
+        private int InsertTopUtilities(List<TS_UtilityAI> bucket)
+        {
+            int size = data.BufferSize;
+            Array.Clear(topBuffer, 0, size);
+
+            int count = 0; // how many utilities added to the buffer
+
+            foreach (var candidate in bucket)
+            {
+                if (!candidate.IsChoosable()) continue;
+
+                float score = Mathf.Clamp01(candidate.CurrentScore);
+
+                // next utility
+                if (score <= data.MinScoreRequired) continue;
+
+                for (int i = 0; i < size; i++)
+                {
+                    var currentTop = topBuffer[i];
+
+                    if (currentTop != null)
+                    {
+                        // dismiss
+                        if (score <= currentTop.CurrentScore) continue;
+
+                        // repositioning tops
+                        for (int j = size - 1; j > i; j--)
+                        {
+                            topBuffer[j] = topBuffer[j - 1];
+                        }
+                    }
+
+                    topBuffer[i] = candidate;
+
+                    if (count < size) count++;
+
+                    break; // next utility
+                }
+            }
+            return count;
+        }
+
+        private void TriggerEvents(VoidChannel_So[] events)
+        {
+            if (events == null) return;
+
+            for (int i = 0; i < events.Length; i++)
+            {
+                var e = events[i];
+                if (e == null) continue;
+
+                e.TriggerEvent();
+            }
+        }
+    }
+}

@@ -6,7 +6,7 @@ namespace TSLib.AI.Behaviour.StateMachines
 {
     [CreateAssetMenu(
     fileName = "StateConfig_So",
-    menuName = "Scriptable Objects/StateMachine/StateConfig_So"
+    menuName = "Scriptable Objects/StateMachine/State Config"
 )]
     public class StateConfig_So : ScriptableObject
     {

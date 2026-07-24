@@ -1,6 +1,6 @@
 public interface IDataSynchronizer
 {
-    public void SaveData();
+    public void OnSave();
 
-    public void LoadData();
+    public void OnLoad();
 }
