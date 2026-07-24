@@ -149,7 +149,7 @@ namespace TSLib.AI.Behaviour.UtilityAI
 
             isExecuting = true;
 
-            SelectNextAction();
+            if (!TrySelectNextAction()) return;
 
             // new cts
             var cts = CancellationTokenSource.CreateLinkedTokenSource(destroyCancellationToken);
@@ -157,17 +157,18 @@ namespace TSLib.AI.Behaviour.UtilityAI
             ExecuteActionAsync(cts).Forget();
         }
 
-        private void SelectNextAction()
+        private bool TrySelectNextAction()
         {
             var candidate = SelectNextUtility();
 
             var selected = FilterSelected(candidate);
 
             // continues current action loop
-            if (selected == null) return;
+            if (selected == null) return false;
 
             // new action
             currentAction = selected;
+            return true;
         }
 
         private async UniTask ExecuteActionAsync(CancellationTokenSource cts)
