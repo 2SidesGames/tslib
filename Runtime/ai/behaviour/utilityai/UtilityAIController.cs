@@ -11,7 +11,7 @@ namespace TSLib.AI.Behaviour.UtilityAI
 {
     public class UtilityAIController : TS_Controller
     {
-        [SerializeField] private TS_UtilityAI[] standardActions;
+        [SerializeField] private TS_UtilityAI[] defaultActions;
         [SerializeField] private UtilityAIControllerData_So data;
 
         [Header("Trigger events")]
@@ -31,14 +31,14 @@ namespace TSLib.AI.Behaviour.UtilityAI
 
         public override void Initialize()
         {
-            if (standardActions == null || standardActions.Length == 0)
+            if (defaultActions == null || defaultActions.Length == 0)
             {
                 throw new NullReferenceException("(missing) At least one default action must be set.");
             }
 
-            for (int i = 0; i < standardActions.Length; i++)
+            for (int i = 0; i < defaultActions.Length; i++)
             {
-                var standard = standardActions[i];
+                var standard = defaultActions[i];
                 if (!standard.Data.IsLoop)
                 {
                     throw new InvalidDataException("Default Utility AI must be a loop action.");
@@ -85,7 +85,7 @@ namespace TSLib.AI.Behaviour.UtilityAI
                     var onChooseNextAction = chooseNextActionEvents[i];
                     if (onChooseNextAction == null) continue;
 
-                    onChooseNextAction.Subscribe(ChooseNextAction);
+                    onChooseNextAction.Subscribe(ChooseAndExecuteNextAction);
                 }
             }
 
@@ -112,7 +112,7 @@ namespace TSLib.AI.Behaviour.UtilityAI
                     var onChooseNextAction = chooseNextActionEvents[i];
                     if (onChooseNextAction == null) continue;
 
-                    onChooseNextAction.Unsubscribe(ChooseNextAction);
+                    onChooseNextAction.Unsubscribe(ChooseAndExecuteNextAction);
                 }
             }
 
@@ -133,9 +133,8 @@ namespace TSLib.AI.Behaviour.UtilityAI
         public void Stop()
         {
             executionCts?.Cancel();
-            isExecuting = false;
 
-            // cleaning
+            // clean up when a loop action is running on background
             if (currentAction != null && currentAction.Data.IsLoop)
             {
                 executionCts?.Dispose();
@@ -144,63 +143,51 @@ namespace TSLib.AI.Behaviour.UtilityAI
             }
         }
 
-        public void ChooseNextAction()
-        {
-            ChooseNextActionAsync().Forget();
-        }
-
-        private async UniTask ChooseNextActionAsync()
+        public void ChooseAndExecuteNextAction()
         {
             if (isExecuting) return;
 
-            var selected = SelectNextUtility();
-
-            if (selected == null)
-            {
-                // continues the current loop action
-                if (currentAction != null && currentAction.Data.IsLoop) return;
-
-                // choosing a random default action
-                int randomIndex = UnityEngine.Random.Range(0, standardActions.Length);
-                currentAction = standardActions[randomIndex];
-            }
-            else
-            {
-                if (currentAction != null && currentAction.Data.IsLoop)
-                {
-                    // continues the current loop action
-                    if (ReferenceEquals(selected, currentAction)) return;
-
-                    // cancels and remove previous cts of loop action checker
-                    executionCts?.Cancel();
-                    executionCts?.Dispose();
-                    executionCts = null;
-                }
-
-                // changes action
-                currentAction = selected;
-            }
-
             isExecuting = true;
+
+            SelectNextAction();
 
             // new cts
             var cts = CancellationTokenSource.CreateLinkedTokenSource(destroyCancellationToken);
             executionCts = cts;
+            ExecuteActionAsync(cts).Forget();
+        }
 
-            // notifies start
-            TriggerEvents(actionStartedEvents);
+        private void SelectNextAction()
+        {
+            var candidate = SelectNextUtility();
 
+            var selected = FilterSelected(candidate);
+
+            // continues current action loop
+            if (selected == null) return;
+
+            // new action
+            currentAction = selected;
+        }
+
+        private async UniTask ExecuteActionAsync(CancellationTokenSource cts)
+        {
             var executingAction = currentAction;
             bool wasCancelled = false;
 
+            // notify start
+            TriggerEvents(actionStartedEvents);
+
             try
             {
-                wasCancelled = await currentAction
+                wasCancelled = await executingAction
                     .ExecuteActionAsync(cts.Token)
                     .SuppressCancellationThrow();
             }
             finally
             {
+                isExecuting = false;
+
                 if (wasCancelled)
                 {
                     if (ReferenceEquals(executionCts, cts)) { executionCts = null; }
@@ -212,12 +199,36 @@ namespace TSLib.AI.Behaviour.UtilityAI
                     if (ReferenceEquals(executionCts, cts)) { executionCts = null; }
                     cts.Dispose();
                     TriggerEvents(actionEndedEvents);
-                    isExecuting = false; // needed for choosing next action
-                    ChooseNextAction();
+                    ChooseAndExecuteNextAction();
+                }
+            }
+        }
+
+        private TS_UtilityAI FilterSelected(TS_UtilityAI selected)
+        {
+            if (currentAction != null && currentAction.Data.IsLoop)
+            {
+                // continues the current loop action
+                if (selected == null || ReferenceEquals(selected, currentAction))
+                {
+                    return null;
                 }
 
-                isExecuting = false;
+                // cancels and remove previous cts of loop action checker
+                executionCts?.Cancel();
+                executionCts?.Dispose();
+                executionCts = null;
             }
+            else
+            {
+                if (selected == null)
+                {
+                    // choosing a random default action
+                    int randomIndex = UnityEngine.Random.Range(0, defaultActions.Length);
+                    selected = defaultActions[randomIndex];
+                }
+            }
+            return selected;
         }
 
         private TS_UtilityAI SelectNextUtility()
