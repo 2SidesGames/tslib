@@ -116,7 +116,7 @@ namespace SGLib.Utility.Management.Component.Capabilities
             }
         }
 
-        public T GetTSComponent<T>() where T : SG_Component
+        public T GetSGComponent<T>() where T : SG_Component
         {
             if (ComponentDict == null) throw new InvalidOperationException(
                     "(missing) components dictionary uninitialized.");
@@ -127,9 +127,9 @@ namespace SGLib.Utility.Management.Component.Capabilities
                 ? (T)component : null;
         }
 
-        public T RequireTSComponent<T>() where T : SG_Component
+        public T RequireSGComponent<T>() where T : SG_Component
         {
-            var component = GetTSComponent<T>();
+            var component = GetSGComponent<T>();
 
             if (component == null) throw new InvalidOperationException(
                     "(missing) component not found.");
