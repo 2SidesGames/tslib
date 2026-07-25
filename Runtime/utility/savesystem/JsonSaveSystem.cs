@@ -1,15 +1,15 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using Newtonsoft.Json;
-using TSLib.SaveSystem.FileData;
-using TSLib.SaveSystem.FileHandler;
-using TSLib.Utility.Management.Component.Capabilities;
+using SGLib.SaveSystem.FileData;
+using SGLib.SaveSystem.FileHandler;
+using SGLib.Utility.Management.Component.Capabilities;
 
-namespace TSLib.SaveSystem
+namespace SGLib.SaveSystem
 {
-    public class JsonSaveSystem : TS_Component
+    public class JsonSaveSystem : SG_Component
     {
-        public TS_GameData GameData { get; set; }
+        public SG_GameData GameData { get; set; }
 
         private FileOperator fileOperator;
 
@@ -24,7 +24,7 @@ namespace TSLib.SaveSystem
             fileOperator.SaveFile(GameData, true);
         }
 
-        public void Load<T>(string fileName, JsonSerializerSettings settings = null) where T : TS_GameData
+        public void Load<T>(string fileName, JsonSerializerSettings settings = null) where T : SG_GameData
         {
             GameData = fileOperator.LoadFile<T>(fileName, settings);
         }
@@ -44,7 +44,7 @@ namespace TSLib.SaveSystem
             await fileOperator.SaveFileAsync(GameData, true, ct);
         }
 
-        public async UniTask LoadAsync<T>(string fileName, JsonSerializerSettings settings = null, CancellationToken ct = default) where T : TS_GameData
+        public async UniTask LoadAsync<T>(string fileName, JsonSerializerSettings settings = null, CancellationToken ct = default) where T : SG_GameData
         {
             GameData = await fileOperator.LoadFileAsync<T>(fileName, settings, ct);
         }

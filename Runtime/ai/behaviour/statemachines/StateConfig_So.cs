@@ -1,8 +1,8 @@
 using System;
-using TSLib.Utility.Patterns.EventChannels.Primitive;
+using SGLib.Utility.Patterns.EventChannels.Primitive;
 using UnityEngine;
 
-namespace TSLib.AI.Behaviour.StateMachines
+namespace SGLib.AI.Behaviour.StateMachines
 {
     [CreateAssetMenu(
     fileName = "StateConfig_So",

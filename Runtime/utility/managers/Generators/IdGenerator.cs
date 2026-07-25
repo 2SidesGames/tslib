@@ -1,6 +1,6 @@
 using System.Threading;
 
-namespace TSLib.Utility.Managers.Generators
+namespace SGLib.Utility.Managers.Generators
 {
     public static class IdGenerator
     {

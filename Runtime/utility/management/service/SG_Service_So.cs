@@ -1,27 +1,27 @@
 using System;
 using System.Collections.Generic;
-using TSLib.Utility.Management.Component.Capabilities;
+using SGLib.Utility.Management.Component.Capabilities;
 using UnityEngine;
 
-namespace TSLib.Utility.Management.Service
+namespace SGLib.Utility.Management.Service
 {
     /// <summary>
     /// ScriptableObject-based service that acts as a registry
     /// for components and a single controller instance.
     /// </summary>
-    public abstract class TS_Service_So : ScriptableObject
+    public abstract class SG_Service_So : ScriptableObject
     {
         // Stores registered components indexed by their concrete type
-        private readonly Dictionary<Type, TS_Component> components = new();
+        private readonly Dictionary<Type, SG_Component> components = new();
 
         // Currently registered controller for this service
-        private TS_Controller controller;
+        private SG_Controller controller;
 
         /// Registers a controller for this service.
         /// Only one controller can be registered at a time.
         /// </summary>
         /// <param name="controller">Controller instance to register.</param>
-        public void RegisterController(TS_Controller controller)
+        public void RegisterController(SG_Controller controller)
         {
             if (controller == null)
                 throw new ArgumentNullException(nameof(controller));
@@ -32,7 +32,7 @@ namespace TSLib.Utility.Management.Service
         /// <summary>
         /// Returns the currently registered controller, or null if none is registered.
         /// </summary>
-        public T GetController<T>() where T : TS_Controller => (T)controller;
+        public T GetController<T>() where T : SG_Controller => (T)controller;
 
         /// <summary>
         /// Unregisters the currently registered controller.
@@ -44,7 +44,7 @@ namespace TSLib.Utility.Management.Service
         /// If a component of the same type already exists, it is overwritten.
         /// </summary>
         /// <param name="component">Component instance to register.</param>
-        public void RegisterComponent(TS_Component component)
+        public void RegisterComponent(SG_Component component)
         {
             if (components == null)
                 throw new ArgumentNullException(nameof(components));
@@ -60,7 +60,7 @@ namespace TSLib.Utility.Management.Service
         /// Returns null if the component is not found or no components are registered.
         /// </summary>
         /// <typeparam name="T">Component type to retrieve.</typeparam>
-        public T GetComponent<T>() where T : TS_Component
+        public T GetComponent<T>() where T : SG_Component
         {
             if (components?.Count == 0) return null;
 
@@ -73,7 +73,7 @@ namespace TSLib.Utility.Management.Service
         /// </summary>
         /// <typeparam name="T">Component type to unregister.</typeparam>
         /// <returns>True if the component was removed; otherwise false.</returns>
-        public bool UnregisterComponent<T>() where T : TS_Component
+        public bool UnregisterComponent<T>() where T : SG_Component
         {
             if (components == null)
                 throw new ArgumentNullException(nameof(components));
@@ -86,7 +86,7 @@ namespace TSLib.Utility.Management.Service
         /// Each component is registered using its concrete type.
         /// </summary>
         /// <param name="components">Array of components to register.</param>
-        public void RegisterComponents(TS_Component[] components)
+        public void RegisterComponents(SG_Component[] components)
         {
             if (components == null)
                 throw new ArgumentNullException(nameof(components));
@@ -111,10 +111,10 @@ namespace TSLib.Utility.Management.Service
         /// True if all components were successfully removed;
         /// false if one or more components were not found.
         /// </returns>
-        public bool UnregisterComponents(TS_Component[] components)
+        public bool UnregisterComponents(SG_Component[] components)
         {
             if (this.components == null)
-                throw new ArgumentNullException(nameof(TS_Service_So.components));
+                throw new ArgumentNullException(nameof(SG_Service_So.components));
 
             if (components == null)
                 throw new ArgumentNullException(nameof(components));

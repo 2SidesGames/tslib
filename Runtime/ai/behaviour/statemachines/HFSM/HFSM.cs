@@ -1,22 +1,22 @@
 using System;
 using System.Collections.Generic;
 
-namespace TSLib.AI.Behaviour.StateMachines.HFSM
+namespace SGLib.AI.Behaviour.StateMachines.HFSM
 {
-    public class HFSM : TS_StateMachine
+    public class HFSM : SG_StateMachine
     {
-        public TS_HierarchicalState Root { get; private set; }
-        public TS_HierarchicalState CurrentLeaf { get; private set; } // lower active state
-        public TS_HierarchicalState PreviousLeaf { get; private set; } // previous lower active state
-        public List<TS_HierarchicalState> CurrentPath { get; private set; } // reversed active path
+        public SG_HierarchicalState Root { get; private set; }
+        public SG_HierarchicalState CurrentLeaf { get; private set; } // lower active state
+        public SG_HierarchicalState PreviousLeaf { get; private set; } // previous lower active state
+        public List<SG_HierarchicalState> CurrentPath { get; private set; } // reversed active path
 
-        public HFSM(TS_HierarchicalState root, TS_HierarchicalState defaultLeaf,
-            IEqualityComparer<TS_State> stateComparer = null, int maxDepth = 10)
+        public HFSM(SG_HierarchicalState root, SG_HierarchicalState defaultLeaf,
+            IEqualityComparer<SG_State> stateComparer = null, int maxDepth = 10)
         {
             Root = root ?? throw new ArgumentNullException(nameof(root));
             CurrentLeaf = defaultLeaf ?? throw new ArgumentNullException(nameof(defaultLeaf));
             PreviousLeaf = null;
-            StateComparer = stateComparer ?? EqualityComparer<TS_State>.Default;
+            StateComparer = stateComparer ?? EqualityComparer<SG_State>.Default;
 
             Started = false;
             Running = false;
@@ -36,12 +36,12 @@ namespace TSLib.AI.Behaviour.StateMachines.HFSM
             }
         }
 
-        public override void TransitionTo(TS_State newLeaf, bool doEnter = true, bool doExit = true, bool allowSameState = false)
+        public override void TransitionTo(SG_State newLeaf, bool doEnter = true, bool doExit = true, bool allowSameState = false)
         {
             if (newLeaf == null)
                 throw new ArgumentNullException(nameof(newLeaf));
 
-            if (newLeaf is not TS_HierarchicalState targetLeaf)
+            if (newLeaf is not SG_HierarchicalState targetLeaf)
                 throw new InvalidCastException(
                     $"Expected HierarchicalState but received {newLeaf.GetType().Name}."
                 );
@@ -78,7 +78,7 @@ namespace TSLib.AI.Behaviour.StateMachines.HFSM
             Run(); // continues running but using the new path
         }
 
-        private TS_HierarchicalState LCA(TS_HierarchicalState node1, TS_HierarchicalState node2)
+        private SG_HierarchicalState LCA(SG_HierarchicalState node1, SG_HierarchicalState node2)
         {
             int depthNode1 = Depth(node1);
             int depthNode2 = Depth(node2);
@@ -104,7 +104,7 @@ namespace TSLib.AI.Behaviour.StateMachines.HFSM
             return node1; // node1 = node2
         }
 
-        private int Depth(TS_HierarchicalState node)
+        private int Depth(SG_HierarchicalState node)
         {
             int d = 0;
 
@@ -116,7 +116,7 @@ namespace TSLib.AI.Behaviour.StateMachines.HFSM
             return d;
         }
 
-        private void SetCurrentPath(TS_HierarchicalState leaf)
+        private void SetCurrentPath(SG_HierarchicalState leaf)
         {
             CurrentPath.Clear();
 

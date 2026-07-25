@@ -1,14 +1,14 @@
 using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using TSLib.Utility.Debug.Logging;
-using TSLib.Utility.Management.Component.Capabilities;
-using TSLib.Utility.Patterns.EventChannels.Primitive;
+using SGLib.Utility.Debug.Logging;
+using SGLib.Utility.Management.Component.Capabilities;
+using SGLib.Utility.Patterns.EventChannels.Primitive;
 using UnityEngine;
 
-namespace TSLib.AI.Behaviour.UtilityAI
+namespace SGLib.AI.Behaviour.UtilityAI
 {
-    public abstract class TS_UtilityAI : TS_Component
+    public abstract class SG_UtilityAI : SG_Component
     {
         [field: SerializeField] public UtilityData_So Data { get; private set; }
 

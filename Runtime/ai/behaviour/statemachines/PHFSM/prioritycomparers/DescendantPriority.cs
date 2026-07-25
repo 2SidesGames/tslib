@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace TSLib.AI.Behaviour.StateMachines.PHFSM.PriorityComparers
+namespace SGLib.AI.Behaviour.StateMachines.PHFSM.PriorityComparers
 {
     public sealed class DescendantPriority : IComparer<Transition>
     {

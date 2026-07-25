@@ -1,9 +1,9 @@
-using TSLib.Utility.Management.Component.Capabilities;
+using SGLib.Utility.Management.Component.Capabilities;
 using UnityEngine;
 
-namespace TSLib.Utility.Patterns.Singleton
+namespace SGLib.Utility.Patterns.Singleton
 {
-    public abstract class TS_Singleton<T> : MonoBehaviour where T : MonoBehaviour
+    public abstract class SG_Singleton<T> : MonoBehaviour where T : MonoBehaviour
     {
         protected virtual bool Persistent => true;
         protected static T instance;

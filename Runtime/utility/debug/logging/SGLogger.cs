@@ -1,11 +1,11 @@
 using System;
 
-namespace TSLib.Utility.Debug.Logging
+namespace SGLib.Utility.Debug.Logging
 {
     /// <summary>
     /// Lightweight logger that can be enabled or disabled globally.
     /// </summary>
-    public static class TSLogger
+    public static class SGLogger
     {
         /// <summary>
         /// Gets or sets whether logging is enabled.

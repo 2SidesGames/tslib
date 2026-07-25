@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace TSLib.AI.Behaviour.UtilityAI
+namespace SGLib.AI.Behaviour.UtilityAI
 {
     [CreateAssetMenu(
         fileName = "UtilityAIController_Data",

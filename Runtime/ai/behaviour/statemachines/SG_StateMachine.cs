@@ -1,25 +1,25 @@
 using System;
 using System.Collections.Generic;
 
-namespace TSLib.AI.Behaviour.StateMachines
+namespace SGLib.AI.Behaviour.StateMachines
 {
-    public abstract class TS_StateMachine : IStateMachine
+    public abstract class SG_StateMachine : IStateMachine
     {
         public bool Started { get; protected set; }
         public bool Running { get; protected set; }
-        public IEqualityComparer<TS_State> StateComparer { get; protected set; }
+        public IEqualityComparer<SG_State> StateComparer { get; protected set; }
 
         public abstract void Execute(float deltaTime);
 
-        public abstract void TransitionTo(TS_State newState, bool doEnter = true, bool doExit = true, bool allowSameState = false);
+        public abstract void TransitionTo(SG_State newState, bool doEnter = true, bool doExit = true, bool allowSameState = false);
 
-        public virtual void RevertToPrevious(TS_State previousState, bool doEnter = false,
+        public virtual void RevertToPrevious(SG_State previousState, bool doEnter = false,
             bool doExit = true, bool allowSameState = false)
         {
             TransitionTo(previousState, doEnter, doExit, allowSameState);
         }
 
-        public virtual bool IsSameState(TS_State s1, TS_State s2) => StateComparer.Equals(s1, s2);
+        public virtual bool IsSameState(SG_State s1, SG_State s2) => StateComparer.Equals(s1, s2);
 
         public abstract void Start(bool doEnter = true);
 

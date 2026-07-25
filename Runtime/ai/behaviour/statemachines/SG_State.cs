@@ -1,13 +1,13 @@
-﻿using TSLib.Utility.Patterns.EventChannels.Primitive;
-using TSLib.Utility.Patterns.Scene.Contexts;
+﻿using SGLib.Utility.Patterns.EventChannels.Primitive;
+using SGLib.Utility.Patterns.Scene.Contexts;
 
-namespace TSLib.AI.Behaviour.StateMachines
+namespace SGLib.AI.Behaviour.StateMachines
 {
     /// <summary>
     /// Base class for all states used by a finite state machine (FSM).
     /// A state encapsulates behavior that is executed while it is active.
     /// </summary>
-    public abstract class TS_State
+    public abstract class SG_State
     {
         protected SceneCtx SceneCtx { get; private set; }
         protected AppCtx AppCtx { get; private set; }
@@ -30,7 +30,7 @@ namespace TSLib.AI.Behaviour.StateMachines
         /// Contains the main behavior logic of the state.
         /// </summary>
         /// <param name="stateMachine">Reference to the owner state machine of this state.</param>
-        public virtual void Execute(TS_StateMachine stateMachine, float deltaTime) { }
+        public virtual void Execute(SG_StateMachine stateMachine, float deltaTime) { }
 
         /// <summary>
         /// Called once when the FSM exits this state.

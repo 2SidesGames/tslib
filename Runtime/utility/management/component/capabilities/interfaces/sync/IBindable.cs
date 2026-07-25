@@ -1,6 +1,6 @@
-using TSLib.Utility.Patterns.Scene.Contexts;
+using SGLib.Utility.Patterns.Scene.Contexts;
 
-namespace TSLib.Utility.Management.Component.Capabilities
+namespace SGLib.Utility.Management.Component.Capabilities
 {
     public interface IBindable
     {

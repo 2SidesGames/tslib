@@ -1,9 +1,9 @@
 using System;
 using UnityEngine;
 
-namespace TSLib.Utility.Patterns.EventChannels
+namespace SGLib.Utility.Patterns.EventChannels
 {
-    public abstract class TS_ChannelT1_So<T> : ScriptableObject
+    public abstract class SG_ChannelT1_So<T> : ScriptableObject
     {
         /// <summary>
         /// Channel event.

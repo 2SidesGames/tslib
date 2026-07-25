@@ -4,7 +4,7 @@
 //
 // -----------------------------------------------------------------------------
 
-namespace Misael0.Tslib.Editor
+namespace SGLib.Editor
 {
     /// <summary>
     /// Provide a general description of the public class.

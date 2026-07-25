@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using TSLib.Utility.Management.Component.Capabilities;
-using TSLib.Utility.Patterns.EventChannels.Primitive;
+using SGLib.Utility.Management.Component.Capabilities;
+using SGLib.Utility.Patterns.EventChannels.Primitive;
 using UnityEngine;
 
-namespace TSLib.AI.Behaviour.UtilityAI
+namespace SGLib.AI.Behaviour.UtilityAI
 {
-    public class UtilityAIController : TS_Controller
+    public class UtilityAIController : SG_Controller
     {
-        [SerializeField] private TS_UtilityAI[] defaultActions;
+        [SerializeField] private SG_UtilityAI[] defaultActions;
         [SerializeField] private UtilityAIControllerData_So data;
 
         [Header("Trigger events")]
@@ -22,10 +22,10 @@ namespace TSLib.AI.Behaviour.UtilityAI
         [SerializeField] private VoidChannel_So[] chooseNextActionEvents;
         [SerializeField] private VoidChannel_So[] stopEvents;
 
-        private TS_UtilityAI currentAction;
-        private TS_UtilityAI[] utilities;
-        private TS_UtilityAI[] topBuffer;
-        private Dictionary<int, List<TS_UtilityAI>> bucketDict;
+        private SG_UtilityAI currentAction;
+        private SG_UtilityAI[] utilities;
+        private SG_UtilityAI[] topBuffer;
+        private Dictionary<int, List<SG_UtilityAI>> bucketDict;
         private bool isExecuting;
         private CancellationTokenSource executionCts;
 
@@ -45,31 +45,31 @@ namespace TSLib.AI.Behaviour.UtilityAI
                 }
             }
 
-            utilities = new TS_UtilityAI[ComponentArray.Length];
+            utilities = new SG_UtilityAI[ComponentArray.Length];
 
             for (int i = 0; i < ComponentArray.Length; i++)
             {
-                utilities[i] = (TS_UtilityAI)ComponentArray[i];
+                utilities[i] = (SG_UtilityAI)ComponentArray[i];
             }
 
-            bucketDict = new Dictionary<int, List<TS_UtilityAI>>(data.MaxBuckets);
-            topBuffer = new TS_UtilityAI[data.BufferSize];
+            bucketDict = new Dictionary<int, List<SG_UtilityAI>>(data.MaxBuckets);
+            topBuffer = new SG_UtilityAI[data.BufferSize];
 
             for (int i = 0; i < utilities.Length; i++)
             {
-                TS_UtilityAI utility = utilities[i];
+                SG_UtilityAI utility = utilities[i];
 
                 if (utility == null) continue;
 
                 int priority = utility.Data.Priority;
 
-                if (bucketDict.TryGetValue(priority, out List<TS_UtilityAI> bucket))
+                if (bucketDict.TryGetValue(priority, out List<SG_UtilityAI> bucket))
                 {
                     bucket.Add(utility);
                 }
                 else
                 {
-                    bucketDict.Add(priority, new List<TS_UtilityAI> { utility });
+                    bucketDict.Add(priority, new List<SG_UtilityAI> { utility });
                 }
             }
 
@@ -206,7 +206,7 @@ namespace TSLib.AI.Behaviour.UtilityAI
             }
         }
 
-        private TS_UtilityAI FilterSelected(TS_UtilityAI selected)
+        private SG_UtilityAI FilterSelected(SG_UtilityAI selected)
         {
             if (currentAction != null && currentAction.Data.IsLoop)
             {
@@ -233,12 +233,12 @@ namespace TSLib.AI.Behaviour.UtilityAI
             return selected;
         }
 
-        private TS_UtilityAI SelectNextUtility()
+        private SG_UtilityAI SelectNextUtility()
         {
             // 0 priority is the highest one
             for (int p = 0; p < data.MaxBuckets; p++)
             {
-                if (!bucketDict.TryGetValue(p, out List<TS_UtilityAI> bucket)) continue;
+                if (!bucketDict.TryGetValue(p, out List<SG_UtilityAI> bucket)) continue;
 
                 foreach (var utility in bucket)
                 {
@@ -256,7 +256,7 @@ namespace TSLib.AI.Behaviour.UtilityAI
             return null;
         }
 
-        private int InsertTopUtilities(List<TS_UtilityAI> bucket)
+        private int InsertTopUtilities(List<SG_UtilityAI> bucket)
         {
             int size = data.BufferSize;
             Array.Clear(topBuffer, 0, size);

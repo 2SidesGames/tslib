@@ -5,7 +5,7 @@
 //
 // -----------------------------------------------------------------------------
 
-namespace Misael0.Tslib
+namespace SGLib
 {
     /// <summary>
     /// Provide a general description of the public class.

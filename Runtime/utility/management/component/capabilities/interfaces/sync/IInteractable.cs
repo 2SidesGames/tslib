@@ -1,4 +1,4 @@
-namespace TSLib.Utility.Management.Component.Capabilities
+namespace SGLib.Utility.Management.Component.Capabilities
 {
     public interface IInteractable
     {

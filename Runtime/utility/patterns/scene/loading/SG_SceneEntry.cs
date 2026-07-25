@@ -1,12 +1,12 @@
 using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using TSLib.Utility.Patterns.Scene.Contexts;
+using SGLib.Utility.Patterns.Scene.Contexts;
 using UnityEngine;
 
-namespace TSLib.Utility.Patterns.Scene.Loading
+namespace SGLib.Utility.Patterns.Scene.Loading
 {
-    public abstract class TS_SceneEntry : MonoBehaviour
+    public abstract class SG_SceneEntry : MonoBehaviour
     {
         protected AppCtx AppCtx;
         protected SceneCtx SceneCtx;

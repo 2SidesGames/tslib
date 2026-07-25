@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace TSLib.Utility.Coords2D
+namespace SGLib.Utility.Coords2D
 {
     /// <summary>
     /// Provides helpers to translate between screen, world, and viewport coordinates.

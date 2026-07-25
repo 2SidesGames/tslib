@@ -3,10 +3,10 @@ using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.Threading;
-using TSLib.SaveSystem.FileData;
+using SGLib.SaveSystem.FileData;
 using UnityEngine;
 
-namespace TSLib.SaveSystem.FileHandler
+namespace SGLib.SaveSystem.FileHandler
 {
     public class FileOperator : IFileOperator
     {
@@ -20,7 +20,7 @@ namespace TSLib.SaveSystem.FileHandler
             directoryPath = Application.persistentDataPath;
         }
 
-        public void SaveFile<T>(T gameData, bool overwrite = true) where T : TS_GameData
+        public void SaveFile<T>(T gameData, bool overwrite = true) where T : SG_GameData
         {
             if (gameData == null) throw new ArgumentNullException(
                 "(missing) there is no data to save.");
@@ -35,7 +35,7 @@ namespace TSLib.SaveSystem.FileHandler
             File.WriteAllText(filePath, serializer.Serialize(gameData));
         }
 
-        public T LoadFile<T>(string fileName, JsonSerializerSettings settings = null) where T : TS_GameData
+        public T LoadFile<T>(string fileName, JsonSerializerSettings settings = null) where T : SG_GameData
         {
             string filePath = GetFilePath(fileName);
 
@@ -63,7 +63,7 @@ namespace TSLib.SaveSystem.FileHandler
             }
         }
 
-        public async UniTask SaveFileAsync<T>(T gameData, bool overwrite = true, CancellationToken ct = default) where T : TS_GameData
+        public async UniTask SaveFileAsync<T>(T gameData, bool overwrite = true, CancellationToken ct = default) where T : SG_GameData
         {
             if (gameData == null)
                 throw new ArgumentNullException(nameof(gameData), "There is no data to save.");
@@ -91,7 +91,7 @@ namespace TSLib.SaveSystem.FileHandler
             }
         }
 
-        public async UniTask<T> LoadFileAsync<T>(string fileName, JsonSerializerSettings settings = null, CancellationToken ct = default) where T : TS_GameData
+        public async UniTask<T> LoadFileAsync<T>(string fileName, JsonSerializerSettings settings = null, CancellationToken ct = default) where T : SG_GameData
         {
             string filePath = GetFilePath(fileName);
 

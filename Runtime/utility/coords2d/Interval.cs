@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace TSLib.Utility.Coords2D
+namespace SGLib.Utility.Coords2D
 {
     public readonly struct Interval
     {

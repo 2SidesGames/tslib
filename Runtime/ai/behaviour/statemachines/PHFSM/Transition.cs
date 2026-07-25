@@ -1,15 +1,15 @@
 using System;
 
-namespace TSLib.AI.Behaviour.StateMachines.PHFSM
+namespace SGLib.AI.Behaviour.StateMachines.PHFSM
 {
     public class Transition
     {
-        public TS_PrioritizedHierarchicalState NextState { get; private set; }
+        public SG_PrioritizedHierarchicalState NextState { get; private set; }
 
         public Transition() { }
-        public Transition(TS_PrioritizedHierarchicalState nextState) => SetNextState(nextState);
+        public Transition(SG_PrioritizedHierarchicalState nextState) => SetNextState(nextState);
 
-        public void SetNextState(TS_PrioritizedHierarchicalState nextState)
+        public void SetNextState(SG_PrioritizedHierarchicalState nextState)
         {
             if (NextState != null) throw new InvalidOperationException(
                 "(invalid) NextState is already assigned.");

@@ -1,22 +1,22 @@
 using System;
 using System.Collections.Generic;
 
-namespace TSLib.AI.Behaviour.StateMachines.PFSM
+namespace SGLib.AI.Behaviour.StateMachines.PFSM
 {
     /// <summary>
     /// Generic finite state machine (FSM) implementation that manages state transitions.
     /// </summary>
-    public class FSM : TS_StateMachine
+    public class FSM : SG_StateMachine
     {
         /// <summary>
         /// The currently active state.
         /// </summary>
-        public TS_State CurrentState { get; private set; }
+        public SG_State CurrentState { get; private set; }
 
         /// <summary>
         /// The previously active state, typically used for reverting transitions.
         /// </summary>
-        public TS_State PreviousState { get; private set; }
+        public SG_State PreviousState { get; private set; }
 
         /// <summary>
         /// Creates a new finite state machine.
@@ -32,11 +32,11 @@ namespace TSLib.AI.Behaviour.StateMachines.PFSM
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="currentState"/> is <c>null</c>.
         /// </exception>
-        public FSM(TS_State currentState, IEqualityComparer<TS_State> stateComparer = null)
+        public FSM(SG_State currentState, IEqualityComparer<SG_State> stateComparer = null)
         {
             CurrentState = currentState ?? throw new ArgumentNullException(nameof(currentState));
             PreviousState = null;
-            StateComparer = stateComparer ?? EqualityComparer<TS_State>.Default;
+            StateComparer = stateComparer ?? EqualityComparer<SG_State>.Default;
         }
 
         /// <summary>
@@ -54,10 +54,10 @@ namespace TSLib.AI.Behaviour.StateMachines.PFSM
         /// </summary>
         /// <param name="newState">The state to transition to.</param>
         /// <param name="doEnter">
-        /// If <c>true</c>, executes <see cref="TS_State.Enter"/> while transitioning.
+        /// If <c>true</c>, executes <see cref="SG_State.Enter"/> while transitioning.
         /// </param>
         /// <param name="doExit">
-        /// If <c>true</c>, executes <see cref="TS_State.Exit"/> while transitioning.
+        /// If <c>true</c>, executes <see cref="SG_State.Exit"/> while transitioning.
         /// </param>
         /// <param name="allowSameState">
         /// If <c>true</c>, allows re-entering the same state even if it is considered equal
@@ -66,7 +66,7 @@ namespace TSLib.AI.Behaviour.StateMachines.PFSM
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="newState"/> is <c>null</c>.
         /// </exception>
-        public override void TransitionTo(TS_State newState, bool doEnter = true, bool doExit = true, bool allowSameState = false)
+        public override void TransitionTo(SG_State newState, bool doEnter = true, bool doExit = true, bool allowSameState = false)
         {
             if (newState == null)
                 throw new ArgumentNullException(nameof(newState));

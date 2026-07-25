@@ -3,14 +3,14 @@ using UnityEngine.TestTools;
 using NUnit.Framework;
 using System.Collections;
 
-namespace Misael0.Tslib.Tests 
+namespace SGLib.Tests
 {
-	
-	class RuntimeExampleTest 
+
+	class RuntimeExampleTest
 	{
 
 		[Test]
-		public void PlayModeSampleTestSimplePasses() 
+		public void PlayModeSampleTestSimplePasses()
 		{
 			// Use the Assert class to test conditions.
 		}
@@ -18,7 +18,7 @@ namespace Misael0.Tslib.Tests
 		// A UnityTest behaves like a coroutine in PlayMode
 		// and allows you to yield null to skip a frame in EditMode
 		[UnityTest]
-		public IEnumerator PlayModeSampleTestWithEnumeratorPasses() 
+		public IEnumerator PlayModeSampleTestWithEnumeratorPasses()
 		{
 			// Use the Assert class to test conditions.
 			// yield to skip a frame

@@ -1,35 +1,35 @@
 using System;
 using System.Collections.Generic;
 
-namespace TSLib.AI.Behaviour.StateMachines.PFSM
+namespace SGLib.AI.Behaviour.StateMachines.PFSM
 {
     /// <summary>
     /// Generic preemptive finite state machine (PFSM) implementation that manages state transitions
     /// and preemptive (interrupting) logic.
     /// </summary>
-    public class Preemptive_FSM : TS_StateMachine
+    public class Preemptive_FSM : SG_StateMachine
     {
         /// <summary>
         /// The currently active state.
         /// </summary>
-        public TS_State CurrentState { get; private set; }
+        public SG_State CurrentState { get; private set; }
 
         /// <summary>
         /// The previously active state, typically used for reverting transitions.
         /// </summary>
-        public TS_State PreviousState { get; private set; }
+        public SG_State PreviousState { get; private set; }
 
         /// <summary>
         /// Preemptive state that can evaluate whether it should interrupt the current state.
         /// When a preemption occurs, the preemptive state is transitioned into and behaves like any
-        /// other state (its <see cref="TS_State.Enter"/>, <see cref="TS_State.Execute"/>,
-        /// and <see cref="TS_State.Exit"/> methods are invoked as part of normal state changes).
+        /// other state (its <see cref="SG_State.Enter"/>, <see cref="SG_State.Execute"/>,
+        /// and <see cref="SG_State.Exit"/> methods are invoked as part of normal state changes).
         /// </summary>
         /// <remarks>
         /// <para>
-        /// The <see cref="TS_PreemptiveState.EvaluatePreemption(Preemptive_FSM)"/> method
+        /// The <see cref="SG_PreemptiveState.EvaluatePreemption(Preemptive_FSM)"/> method
         /// is called every update cycle (if a preemptive state is assigned). This method typically decides
-        /// whether to call <see cref="TransitionTo(TS_State, bool)"/> to transition into the preemptive
+        /// whether to call <see cref="TransitionTo(SG_State, bool)"/> to transition into the preemptive
         /// state or another state.
         /// </para>
         /// <para>
@@ -37,7 +37,7 @@ namespace TSLib.AI.Behaviour.StateMachines.PFSM
         /// to take over from any other active state.
         /// </para>
         /// </remarks>
-        public TS_PreemptiveState PreemptiveState { get; private set; }
+        public SG_PreemptiveState PreemptiveState { get; private set; }
 
         /// <summary>
         /// Creates a new preemptive finite state machine.
@@ -54,13 +54,13 @@ namespace TSLib.AI.Behaviour.StateMachines.PFSM
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="currentState"/> or <paramref name="preemptiveState"/> is <c>null</c>.
         /// </exception>
-        public Preemptive_FSM(TS_State currentState, TS_PreemptiveState preemptiveState,
-            IEqualityComparer<TS_State> stateComparer = null)
+        public Preemptive_FSM(SG_State currentState, SG_PreemptiveState preemptiveState,
+            IEqualityComparer<SG_State> stateComparer = null)
         {
             CurrentState = currentState ?? throw new ArgumentNullException(nameof(currentState));
             PreemptiveState = preemptiveState ?? throw new ArgumentNullException(nameof(preemptiveState));
             PreviousState = null;
-            StateComparer = stateComparer ?? EqualityComparer<TS_State>.Default;
+            StateComparer = stateComparer ?? EqualityComparer<SG_State>.Default;
         }
 
         /// <summary>
@@ -92,15 +92,15 @@ namespace TSLib.AI.Behaviour.StateMachines.PFSM
         /// to the current state.
         /// </param>
         /// /// <param name="doEnter">
-        /// If <c>true</c>, executes <see cref="TS_State.Enter"/> while transitioning.
+        /// If <c>true</c>, executes <see cref="SG_State.Enter"/> while transitioning.
         /// </param>
         /// <param name="doExit">
-        /// If <c>true</c>, executes <see cref="TS_State.Exit"/> while transitioning.
+        /// If <c>true</c>, executes <see cref="SG_State.Exit"/> while transitioning.
         /// </param>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="newState"/> is <c>null</c>.
         /// </exception>
-        public override void TransitionTo(TS_State newState, bool doEnter = true, bool doExit = true, bool allowSameState = false)
+        public override void TransitionTo(SG_State newState, bool doEnter = true, bool doExit = true, bool allowSameState = false)
         {
             if (newState == null)
                 throw new ArgumentNullException(nameof(newState));
@@ -123,7 +123,7 @@ namespace TSLib.AI.Behaviour.StateMachines.PFSM
         /// <param name="allowSameState">
         /// If <c>true</c>, allows assigning the same preemptive state again.
         /// </param>
-        public void SetPreemptiveState(TS_PreemptiveState newPreempState, bool allowSameState = false)
+        public void SetPreemptiveState(SG_PreemptiveState newPreempState, bool allowSameState = false)
         {
             if (newPreempState == null)
                 throw new ArgumentNullException(nameof(newPreempState));

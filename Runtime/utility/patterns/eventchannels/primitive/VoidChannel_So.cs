@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace TSLib.Utility.Patterns.EventChannels.Primitive
+namespace SGLib.Utility.Patterns.EventChannels.Primitive
 {
     [CreateAssetMenu(
         fileName = "VoidChannel",

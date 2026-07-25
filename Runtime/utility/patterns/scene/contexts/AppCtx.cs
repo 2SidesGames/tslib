@@ -1,4 +1,4 @@
-namespace TSLib.Utility.Patterns.Scene.Contexts
+namespace SGLib.Utility.Patterns.Scene.Contexts
 {
     public class AppCtx
     {

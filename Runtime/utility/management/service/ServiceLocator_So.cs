@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-namespace TSLib.Utility.Management.Service
+namespace SGLib.Utility.Management.Service
 {
     [CreateAssetMenu(fileName = "ServiceLocator", menuName = "Service Locator")]
     public class ServiceLocator_So : ScriptableObject
     {
-        [SerializeField] private TS_Service_So[] services;
+        [SerializeField] private SG_Service_So[] services;
 
-        private readonly Dictionary<Type, TS_Service_So> registry = new();
+        private readonly Dictionary<Type, SG_Service_So> registry = new();
 
         public bool Active { get; private set; } = false;
 
@@ -24,7 +24,7 @@ namespace TSLib.Utility.Management.Service
             }
         }
 
-        public void Register<T>(T service) where T : TS_Service_So
+        public void Register<T>(T service) where T : SG_Service_So
         {
             if (service == null)
                 throw new ArgumentNullException(nameof(service));
@@ -42,12 +42,12 @@ namespace TSLib.Utility.Management.Service
             registry[type] = service;
         }
 
-        public void Unregister<T>() where T : TS_Service_So
+        public void Unregister<T>() where T : SG_Service_So
         {
             registry.Remove(typeof(T));
         }
 
-        public T Get<T>() where T : TS_Service_So
+        public T Get<T>() where T : SG_Service_So
         {
             if (!Active) throw new InvalidOperationException(
                 "(disabled) The ServiceLocator is currently disabled. Call SetActive(true) before attempting to use it.");

@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 
-namespace TSLib.SaveSystem.FileHandler
+namespace SGLib.SaveSystem.FileHandler
 {
     public class JsonSerializer : ISerializer
     {

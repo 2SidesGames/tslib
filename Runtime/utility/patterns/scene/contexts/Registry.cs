@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace TSLib.Utility.Patterns.Scene.Contexts
+namespace SGLib.Utility.Patterns.Scene.Contexts
 {
     public class Registry<T>
     {

@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
-using TSLib.AI.Behaviour.StateMachines.HFSM;
-using TSLib.Utility.Patterns.EventChannels.Primitive;
+using SGLib.AI.Behaviour.StateMachines.HFSM;
+using SGLib.Utility.Patterns.EventChannels.Primitive;
 
-namespace TSLib.AI.Behaviour.StateMachines.PHFSM
+namespace SGLib.AI.Behaviour.StateMachines.PHFSM
 {
-    public abstract class TS_PrioritizedHierarchicalState : TS_HierarchicalState
+    public abstract class SG_PrioritizedHierarchicalState : SG_HierarchicalState
     {
         public int Priority { get; set; }
         public bool IsInterruptible { private get; set; }
@@ -49,7 +49,7 @@ namespace TSLib.AI.Behaviour.StateMachines.PHFSM
             EnterLogic();
         }
 
-        public sealed override void Execute(TS_StateMachine stateMachine, float deltaTime)
+        public sealed override void Execute(SG_StateMachine stateMachine, float deltaTime)
         {
             ExecuteLogic(stateMachine, deltaTime);
 
@@ -99,7 +99,7 @@ namespace TSLib.AI.Behaviour.StateMachines.PHFSM
         }
 
         protected virtual void EnterLogic() { }
-        protected virtual void ExecuteLogic(TS_StateMachine stateMachine, float deltaTime) { }
+        protected virtual void ExecuteLogic(SG_StateMachine stateMachine, float deltaTime) { }
         protected virtual void ExitLogic() { }
 
         protected virtual void EnableEnter() => EnterCondition = true;
@@ -107,7 +107,7 @@ namespace TSLib.AI.Behaviour.StateMachines.PHFSM
         protected virtual void DisableEnter() => EnterCondition = false;
         protected virtual void DisableExit() => ExitCondition = false;
 
-        private TS_PrioritizedHierarchicalState GetHigherPriorityState(Transition t1, Transition t2)
+        private SG_PrioritizedHierarchicalState GetHigherPriorityState(Transition t1, Transition t2)
         {
             return comparer.Compare(t1, t2) <= 0 ? t1.NextState : t2.NextState;
         }

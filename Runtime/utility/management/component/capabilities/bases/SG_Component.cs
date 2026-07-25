@@ -1,10 +1,10 @@
 using System.Collections.Generic;
-using TSLib.Utility.Patterns.Scene.Contexts;
+using SGLib.Utility.Patterns.Scene.Contexts;
 using UnityEngine;
 
-namespace TSLib.Utility.Management.Component.Capabilities
+namespace SGLib.Utility.Management.Component.Capabilities
 {
-    public abstract class TS_Component : MonoBehaviour, IComponent
+    public abstract class SG_Component : MonoBehaviour, IComponent
     {
         protected SceneCtx SceneCtx;
         protected AppCtx AppCtx;

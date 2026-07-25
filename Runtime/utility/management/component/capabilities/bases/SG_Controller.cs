@@ -1,15 +1,15 @@
 using System;
 using System.Collections.Generic;
-using TSLib.Utility.Managers.Generators;
-using TSLib.Utility.Patterns.Scene.Contexts;
+using SGLib.Utility.Managers.Generators;
+using SGLib.Utility.Patterns.Scene.Contexts;
 using UnityEngine;
 
-namespace TSLib.Utility.Management.Component.Capabilities
+namespace SGLib.Utility.Management.Component.Capabilities
 {
-    public abstract class TS_Controller : TS_Component, IRegistrable
+    public abstract class SG_Controller : SG_Component, IRegistrable
     {
-        [SerializeField] protected TS_Component[] ComponentArray;
-        protected Dictionary<Type, TS_Component> ComponentDict;
+        [SerializeField] protected SG_Component[] ComponentArray;
+        protected Dictionary<Type, SG_Component> ComponentDict;
 
         public int Id { get; private set; }
 
@@ -18,7 +18,7 @@ namespace TSLib.Utility.Management.Component.Capabilities
             if (ComponentArray == null) throw new InvalidOperationException(
                 "(missing) components storage uninitialized.");
 
-            ComponentDict = new Dictionary<Type, TS_Component>(ComponentArray.Length);
+            ComponentDict = new Dictionary<Type, SG_Component>(ComponentArray.Length);
 
             for (int i = 0; i < ComponentArray.Length; i++)
             {
@@ -116,7 +116,7 @@ namespace TSLib.Utility.Management.Component.Capabilities
             }
         }
 
-        public T GetTSComponent<T>() where T : TS_Component
+        public T GetTSComponent<T>() where T : SG_Component
         {
             if (ComponentDict == null) throw new InvalidOperationException(
                     "(missing) components dictionary uninitialized.");
@@ -127,7 +127,7 @@ namespace TSLib.Utility.Management.Component.Capabilities
                 ? (T)component : null;
         }
 
-        public T RequireTSComponent<T>() where T : TS_Component
+        public T RequireTSComponent<T>() where T : SG_Component
         {
             var component = GetTSComponent<T>();
 

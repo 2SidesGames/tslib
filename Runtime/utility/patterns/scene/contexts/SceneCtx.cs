@@ -1,6 +1,6 @@
-using TSLib.Utility.Management.Component.Capabilities;
+using SGLib.Utility.Management.Component.Capabilities;
 
-namespace TSLib.Utility.Patterns.Scene.Contexts
+namespace SGLib.Utility.Patterns.Scene.Contexts
 {
-    public sealed class SceneCtx : Registry<TS_Controller> { }
+    public sealed class SceneCtx : Registry<SG_Controller> { }
 }

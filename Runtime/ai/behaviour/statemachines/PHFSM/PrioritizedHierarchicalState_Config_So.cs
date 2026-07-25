@@ -1,8 +1,8 @@
 using System;
-using TSLib.Utility.Patterns.EventChannels.Primitive;
+using SGLib.Utility.Patterns.EventChannels.Primitive;
 using UnityEngine;
 
-namespace TSLib.AI.Behaviour.StateMachines.PHFSM
+namespace SGLib.AI.Behaviour.StateMachines.PHFSM
 {
     [CreateAssetMenu(
     fileName = "PrioritizedHierarchicalState_Config",
