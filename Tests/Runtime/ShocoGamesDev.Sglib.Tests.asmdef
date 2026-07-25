@@ -1,15 +1,12 @@
 {
-    "name": "TwoSidesDev.Tslib.Editor.Tests",
+    "name": "ShocoGamesDev.Sglib.Tests",
     "rootNamespace": "",
     "references": [
-        "TwoSidesDev.Tslib.Editor",
-        "TwoSidesDev.Tslib",
+        "ShocoGamesDev.Sglib",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner"
     ],
-    "includePlatforms": [
-        "Editor"
-    ],
+    "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": true,

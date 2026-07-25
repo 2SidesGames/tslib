@@ -1,6 +1,6 @@
 {
-  "name": "com.twosidesdev.tslib",
-  "displayName": "TS Lib",
+  "name": "com.shocogamesdev.sglib",
+  "displayName": "SG Lib",
   "version": "0.1.0",
   "unity": "6000.3",
   "unityRelease": "2f1",
@@ -8,10 +8,10 @@
   "dependencies": {
     "com.unity.test-framework": "1.6.0",
     "com.unity.inputsystem": "1.17.0",
-    "com.cysharp.unitask": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask#2.5.10"
+    "com.cysharp.unitask": "2.5.11"
   },
   "author": {
-    "name": "Misael & Isaac S\u00e1nchez Pacheco",
+    "name": "Misael S\u00e1nchez Pacheco",
     "url": "http://www.example.com",
     "email": "example@email.com"
   },
