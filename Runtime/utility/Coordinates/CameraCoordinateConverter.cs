@@ -1,12 +1,12 @@
 using System;
 using UnityEngine;
 
-namespace SGLib.Utility.Coords2D
+namespace SGLib.Utility.Coordinates
 {
     /// <summary>
     /// Provides helpers to translate between screen, world, and viewport coordinates.
     /// </summary>
-    public static class CoordsTranslator
+    public static class CameraCoordinateConverter
     {
         /// <summary>
         /// Converts a screen position into world coordinates.
